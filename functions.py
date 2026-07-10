@@ -26,7 +26,7 @@ RI_dict = {1: 0.00, 2: 0.00, 3: 0.58, 4: 0.90, 5: 1.12,
 max_options = 5
 max_criteria = 5
 
-##What do you want to compare?
+##How many alternatives do you want to compare?
 
 #make sure this process is repeated so it doesn't break
 
@@ -48,30 +48,68 @@ while num_options_set == False:
         else:
             num_options_set = True
     
-    except ValueError:
+    except ValueError:  #will this work if i dont add a number?
         print("Error!! \n input numerical value")
         num_options_set = False
     
-     
+##List alternatives you want to compare?
+
+#make sure this process is repeated so it doesn't break
+
+#- let input be any data object (does it matter?)
+#- user need to provide contextual data for analysis to be
+# meaningful so if there's not data we need to ask user to input
 
 options = [] #place holder
 for i in range(num_options):
-    option = input(f"Enter option {i+1}: ")
+    option = None
+    while option == None:
+        option = input(f"Enter option {i+1}: ")
     options.append(option)
 
 #On what criteria do you want to compare them?
 #make sure this process is repeated so it doesn't break
-#question could be better
-num_criteria = int(input("How many criteria do you want to compare? (Enter a number): "))
+
+
+num_criteria_set = False
+while num_criteria_set == False:
+    num_criteria = input("How many criteria do you want to compare? (Enter a number): ")
+    try:
+        num_criteria = int(num_criteria)
+        if num_criteria < 2 or num_criteria > max_criteria:
+         num_criteria_set = False
+         print(f"pick between 1 and {max_criteria}" )
+        else:
+            num_criteria_set = True
+    
+    except ValueError:  #will this work if i dont add a number?
+        print("Error!! \ninput numerical value")
+        num_criteria_set = False
+
+##List alternatives you want to compare?
+
+#make sure this process is repeated so it doesn't break
+
+#- let input be any data object (does it matter?)
+#- user need to provide contextual data for analysis to be
+# meaningful so if there's not data we need to ask user to input
+
 
 criteria = ['goal',] #place holder
 criteria_matrix = {}
 
 for i in range(num_criteria):
-    criterion = str(input(f"Enter criterion {i+1}: "))
-    criteria.append(criterion)
+    criterion = None
+    while criterion == None:
+        criterion = str(input(f"Enter criterion {i+1}: "))
+        criteria.append(criterion)
+
+#initialize the judgement matrices
 
 for _ in criteria :
+    #create judgement matrix for goal because the dimensions are defined differently to the options
+    #jugdement matrix
+
     if _ == 'goal':
         judgement_matrix = np.zeros((len(criteria)-1, len(criteria)-1))
         #we subtracting 1 so that we don't include goal criteria
@@ -83,8 +121,23 @@ for _ in criteria :
                     judgement_matrix[i, j] = 1
                 elif i < j:
                     #find ways to improve this here so it doesn't break
-                    judgement_matrix[i, j] = float(input(f"based on {_} how do you feel about the comparison between {criteria[i]} and {criteria[j]}? (Enter a value from 1 to 9): "))
-                    judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
+                    # make sure we entering the right numbers [1/9 to 9]
+                    #make the reference object clear > 1 implies refernce object is superior?
+                    matrix_element_status = False
+                    while matrix_element_status == False:
+                        matrix_element = input(f"based on {_} how do you feel about the comparison between {criteria[i+1]} and {criteria[j+1]}? (Enter a value from 1/9 to 9): ")
+                        try:
+                            matrix_element = float(matrix_element)
+                            if 1/9 < matrix_element < 9:
+                                judgement_matrix[i, j] = matrix_element
+                                judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
+                                matrix_element_status = True
+
+
+                        except ValueError:  #will this work if i dont add a number?
+                            print("Error!! \n input numerical value")
+                            matrix_element_status = False
+
 
     else:
         judgement_matrix = np.zeros((len(options), len(criteria)))
@@ -96,10 +149,27 @@ for _ in criteria :
                     judgement_matrix[i, j] = 1
                 elif i < j+1:
                     #make sure this process is repeated so it doesn't break
-                    judgement_matrix[i, j] = float(input(f"based on {_} how do you feel about the comparison between {options[i]} and {options[j]}? (Enter a value from 1 to 9): "))
-                    judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
+                    matrix_element_status = False
+                    while matrix_element_status == False:
+                        matrix_element = input(f"based on {_} how do you feel about the comparison between {options[i]} and {options[j]}? (Enter a value from 1/9 to 9): ")
+                        try:
+                            matrix_element = float(matrix_element)
+                            if 1/9 < matrix_element < 9:
+                                judgement_matrix[i, j] = matrix_element
+                                judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
+                                matrix_element_status = True
+                            else:
+                                matrix_element_status == False
 
-    print(judgement_matrix)
+
+                        except ValueError:  #will this work if i dont add a number?
+                            print("Error!! \n input numerical value")
+                            matrix_element_status = False
+
+            
+
+                    
+    #rint(judgement_matrix)
 
     criteria_matrix[_] = judgement_matrix
 
@@ -109,7 +179,7 @@ for _ in criteria_matrix.keys():
     cr = consistency_ratio(criteria_matrix[_])
     criteria_matrix[_] = [criteria_matrix[_], pv, cr]
 
-print(criteria_matrix)
+#print(criteria_matrix)
 
 
 
@@ -129,7 +199,7 @@ for i in range(len(options)):
 
 final_pv = np.array(final_pv)
 
-
+# improve interpretation and output of final data
 print(final_pv)
 
 
