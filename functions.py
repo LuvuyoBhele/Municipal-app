@@ -6,11 +6,6 @@ def priority_vector(matrix):
     priority_vector = max_eigvec / np.sum(max_eigvec) #normalization
     return priority_vector.real
 
-
-# Random Index values for matrices of size 1–10
-RI_dict = {1: 0.00, 2: 0.00, 3: 0.58, 4: 0.90, 5: 1.12,
-           6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49}
-
 def consistency_ratio(matrix):
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_eigval = np.max(eigvals).real   # largest eigenvalue
@@ -24,11 +19,41 @@ def consistency_ratio(matrix):
 #scale needs to in dictionary format with meaning attached
 scale = [i for i in range(1,10)]
 
+# Random Index values for matrices of size 1–10
+RI_dict = {1: 0.00, 2: 0.00, 3: 0.58, 4: 0.90, 5: 1.12,
+           6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49}
 
+max_options = 5
+max_criteria = 5
 
-#What do you want to compare?
+##What do you want to compare?
+
 #make sure this process is repeated so it doesn't break
-num_options = int(input("How many options do you want to compare? (Enter a number): "))
+
+#- the goal here is to prevent the app from breaking when a user inputs the number of options that want they want to compare.
+
+#-we need to make sure that input is an integer, if its not an integer we want the user to try inputing again
+
+#-if user inputs zero then the caluclations won't work so force user to input real data
+
+
+num_options_set = False
+while num_options_set == False:
+    num_options = input("How many options do you want to compare? (Enter a number): ")
+    try:
+        num_options = int(num_options)
+        if num_options < 2 or num_options > max_options:
+         num_options_set = False
+         print(f"pick between 1 and {max_options}" )
+        else:
+            num_options_set = True
+    
+    except ValueError:
+        print("Error!! \n input numerical value")
+        num_options_set = False
+    
+     
+
 options = [] #place holder
 for i in range(num_options):
     option = input(f"Enter option {i+1}: ")
