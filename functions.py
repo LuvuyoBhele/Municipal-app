@@ -1,10 +1,5 @@
 import numpy as np
 
-
-
-
-
-
 def priority_vector(matrix):
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals)
@@ -242,13 +237,31 @@ for _ in criteria :
                 elif i < j:
                     #find ways to improve this here so it doesn't break
                     # make sure we entering the right numbers [1/9 to 9]
-                    #make the reference object clear > 1 implies refernce object is superior?
+                    #make the reference object clear > 1 implies reference object is superior?
                     matrix_element_status = False
                     while matrix_element_status == False:
-                        matrix_element = input(f"based on {_} how do you feel about the comparison between {criteria[i+1]} and {criteria[j+1]}? (Enter a value from 1/9 to 9): ")
+                        #choose what you feel is better
+                        preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}')
+                        #check if the answer is exact
+                        while preference != criteria[i+1] or preference != criteria[i+1]:
+                            print('Incorrect input! \n Inputs are case sensitive so eneter the exact options')
+                            preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}')
+                        #Now we make the inputting of other options easy
+                        if preference == criteria[i+1]:
+                            not_preference = criteria[j+1]
+                        else:
+                             not_preference = criteria[i+1]
+                            
+                        #make asking the question fit the above variables
+                        comparison = input(f'in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ')
+                        if preference == criteria[i+1]:
+                            matrix_element = comparison
+                        else:
+                            matrix_element =1/comparison
+
                         try:
                             matrix_element = float(matrix_element)
-                            if 1/9 < matrix_element < 9:
+                            if 1 < matrix_element < 9:
                                 judgement_matrix[i, j] = matrix_element
                                 judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
                                 matrix_element_status = True
