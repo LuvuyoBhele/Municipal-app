@@ -230,30 +230,76 @@ for _ in criteria :
         #we subtracting 1 so that we don't include goal criteria
 
 
-        for i in range(0,len(criteria)-1):
-            for j in range(0,len(criteria)-1):
+        for i in range(0,len(criteria)-1): #Represents a row index so this is what the other elements are being compared to hence this is the numerator
+            for j in range(0,len(criteria)-1): #Represents a column index
                 if i == j:
                     judgement_matrix[i, j] = 1
                 elif i < j:
                     #find ways to improve this here so it doesn't break
-                    # make sure we entering the right numbers [1/9 to 9]
+                    
                     #make the reference object clear > 1 implies reference object is superior?
                     matrix_element_status = False
                     while matrix_element_status == False:
                         #choose what you feel is better
-                        preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}')
+                        preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
                         #check if the answer is exact
-                        while preference != criteria[i+1] or preference != criteria[i+1]:
-                            print('Incorrect input! \n Inputs are case sensitive so eneter the exact options')
-                            preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}')
+                        while preference != criteria[i+1] and preference != criteria[j+1]:
+                            print('Incorrect input! \n Inputs are case sensitive so enter the exact options')
+                            preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
                         #Now we make the inputting of other options easy
                         if preference == criteria[i+1]:
                             not_preference = criteria[j+1]
                         else:
-                             not_preference = criteria[i+1]
+                            not_preference = criteria[i+1]
                             
                         #make asking the question fit the above variables
-                        comparison = input(f'in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ')
+                        comparison = float(input(f'in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): '))
+                        while type(comparison) != float or comparison < 1  or 9 < comparison:
+                            comparison = float(input(f"Error! Input numerical value (number) between [1,9] \n in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): "))
+        
+                        if preference == criteria[i+1]:
+                            matrix_element = comparison
+                        else:
+                            matrix_element =1/comparison
+
+                        judgement_matrix[i, j] = matrix_element
+                        judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
+                        matrix_element_status = True
+                                
+
+
+                        
+
+
+    else:
+        judgement_matrix = np.zeros((len(options), len(criteria)))
+
+
+        for i in range(len(options)):
+            for j in range(len(options)):
+                if i == j:
+                    judgement_matrix[i, j] = 1
+                elif i < j+1:
+                    #make sure this process is repeated so it doesn't break
+                    matrix_element_status = False
+                    while matrix_element_status == False:
+                        #choose what you feel is better
+                        preference = input(f'based on {_}, what is more important {option[i]} or {option[j]}? ')
+                        #check if the answer is exact
+                        while preference != option[i] and preference != option[j]:
+                            print('Incorrect input! \n Inputs are case sensitive so enter the exact options')
+                            preference = input(f'based on {_}, what is more important {option[i]} or {option[j]}? ')
+                        #Now we make the inputting of other options easy
+                        if preference == option[i]:
+                            not_preference = option[j]
+                        else:
+                             not_preference = option[i]
+                            
+                        #make asking the question fit the above variables
+                        comparison = float(input(f'in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): '))
+                        while type(comparison) != float or comparison < 1  or 9 < comparison:
+                            input(f"Error! Input numerical value (number) \n in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ")
+        
                         if preference == criteria[i+1]:
                             matrix_element = comparison
                         else:
@@ -270,34 +316,7 @@ for _ in criteria :
                         except ValueError:  #will this work if i dont add a number?
                             print("Error!! \n input numerical value")
                             matrix_element_status = False
-
-
-    else:
-        judgement_matrix = np.zeros((len(options), len(criteria)))
-
-
-        for i in range(len(options)):
-            for j in range(len(criteria)):
-                if i == j:
-                    judgement_matrix[i, j] = 1
-                elif i < j+1:
-                    #make sure this process is repeated so it doesn't break
-                    matrix_element_status = False
-                    while matrix_element_status == False:
-                        matrix_element = input(f"based on {_} how do you feel about the comparison between {options[i]} and {options[j]}? (Enter a value from 1/9 to 9): ")
-                        try:
-                            matrix_element = float(matrix_element)
-                            if 1/9 < matrix_element < 9:
-                                judgement_matrix[i, j] = matrix_element
-                                judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
-                                matrix_element_status = True
-                            else:
-                                matrix_element_status == False
-
-
-                        except ValueError:  #will this work if i dont add a number?
-                            print("Error!! \n input numerical value")
-                            matrix_element_status = False
+                        
 
             
     pv = priority_vector(judgement_matrix)
