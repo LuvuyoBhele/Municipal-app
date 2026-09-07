@@ -1,5 +1,14 @@
 import numpy as np
 
+# fix the part when inconsistency happens with goal matrix
+# mention what the problem is
+# i need to be able to change top 2 criteria largest deviations
+# explain where the problem might be? if the consistency_ratio doesn't change for all choices that implies i should change the criteria right? The option of choosing to chnage criteria weight or pairwise must happen here.
+# in the correction it uses goal as something we must change which is wrong
+
+
+
+
 def priority_vector(matrix):
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals)
@@ -21,6 +30,7 @@ def consistency_ratio(matrix):
 import numpy as np
 
 def consistency_corrector(matrix, ev, labels=None):
+    #when i review the options i need know what i'm pritortising
     """
     Suggests the pairwise comparison that contributes most to inconsistency
     using the eigenvalue sensitivity deviation measure.
@@ -74,7 +84,6 @@ def consistency_corrector(matrix, ev, labels=None):
     )
 
     while consistency_ratio(matrix) >= 0.1:
-
         try:
             new_value = float(
                 input(f"Enter new comparison {left}/{right}: ")
@@ -210,27 +219,27 @@ while num_criteria_set == False:
 # meaningful so if there's not data we need to ask user to input
 
 
-criteria = ['goal',] #place holder
+criteria = ['goal'] #place holder
 criteria_matrix = {}
 
 for i in range(num_criteria):
     criterion = None
     while criterion == None:
-        criterion = str(input(f"Enter criterion {i+1}: "))
+        criterion = str(input(f"Enter criterion {i+1}:\n") )
         criteria.append(criterion)
 
 #initialize the judgement matrices
 
-for _ in criteria :
+for _ in criteria : #give this underscore a more descriptive name because it helps with debugging and readability of code
     #create judgement matrix for goal because the dimensions are defined differently to the options
     #jugdement matrix
 
-    if _ == 'goal':
+    if _ == 'goal': 
         judgement_matrix = np.zeros((len(criteria)-1, len(criteria)-1))
         #we subtracting 1 so that we don't include goal criteria
 
 
-        for i in range(0,len(criteria)-1): #Represents a row index so this is what the other elements are being compared to hence this is the numerator
+        for i in range(0,len(criteria)-1): #Represents a row index so this is what the other elements are being compared to hence this is the numerator #the minus 1 is beacuse we already know one of the values in matrix
             for j in range(0,len(criteria)-1): #Represents a column index
                 if i == j:
                     judgement_matrix[i, j] = 1
@@ -238,22 +247,26 @@ for _ in criteria :
                     #find ways to improve this here so it doesn't break
                     
                     #make the reference object clear > 1 implies reference object is superior?
-                    matrix_element_status = False
+                    matrix_element_status = False #can make check more robust by checking if the value is a float and between 1 and 9
                     while matrix_element_status == False:
                         #choose what you feel is better
-                        preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
+                        preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}? ') #
                         #check if the answer is exact
                         while preference != criteria[i+1] and preference != criteria[j+1]:
                             print('Incorrect input! \n Inputs are case sensitive so enter the exact options')
                             preference = input(f'based on {_}, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
                         #Now we make the inputting of other options easy
+                        #here we're making the pairwise comparison of the criteria
                         if preference == criteria[i+1]:
                             not_preference = criteria[j+1]
                         else:
                             not_preference = criteria[i+1]
                             
                         #make asking the question fit the above variables
+                        #rating of pereference
                         comparison = float(input(f'in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): '))
+
+
                         while type(comparison) != float or comparison < 1  or 9 < comparison:
                             comparison = float(input(f"Error! Input numerical value (number) between [1,9] \n in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): "))
         
@@ -265,53 +278,63 @@ for _ in criteria :
                         judgement_matrix[i, j] = matrix_element
                         judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
                         matrix_element_status = True
+        pv = priority_vector(judgement_matrix)
+        cr = consistency_ratio(judgement_matrix)
+        #if cr > 0.1:
+        #    print(f'inconsistency detected in {_} matrix ')
+        #    consistency_corrector(judgement_matrix, pv, labels=criteria[1:]) #problem is this starts with goal and we don't care for that when we finding values to change.
                                 
 
 
                         
 
-
     else:
-        judgement_matrix = np.zeros((len(options), len(criteria)))
+        judgement_matrix = np.zeros((len(options), len(options)))
 
 
-        for i in range(len(options)):
+        for i in range(len(options)): #this must represent the row index because this is what the other elements are being compared to hence this is the numerator
             for j in range(len(options)):
                 if i == j:
                     judgement_matrix[i, j] = 1
                 elif i < j+1:
                     #make sure this process is repeated so it doesn't break
-                    matrix_element_status = False
+                    matrix_element_status = False #make this more robust by checking if the value is a float and between 1 and 9
                     while matrix_element_status == False:
                         #choose what you feel is better
-                        preference = input(f'based on {_}, what is more important {option[i]} or {option[j]}? ')
+                        preference = input(f'based on {_}, what is more important {options[i]} or {options[j]}? ')
                         #check if the answer is exact
-                        while preference != option[i] and preference != option[j]:
+                        while preference != options[i] and preference != options[j]:
                             print('Incorrect input! \n Inputs are case sensitive so enter the exact options')
-                            preference = input(f'based on {_}, what is more important {option[i]} or {option[j]}? ')
+                            preference = input(f'based on {_}, what is more important {options[i]} or {options[j]}? ')
                         #Now we make the inputting of other options easy
-                        if preference == option[i]:
-                            not_preference = option[j]
+                        #now the options are being compared based on the criteria
+                        if preference == options[i]:
+                            not_preference = options[j]
                         else:
-                             not_preference = option[i]
+                             not_preference = options[i]
                             
                         #make asking the question fit the above variables
                         comparison = float(input(f'in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): '))
-                        while type(comparison) != float or comparison < 1  or 9 < comparison:
-                            input(f"Error! Input numerical value (number) \n in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ")
-        
-                        if preference == criteria[i+1]:
+                        while type(comparison) != float or 1 > comparison or comparison > 9:
+                            comparison = float(input(f"Error! Input numerical value (number) \n in terms of {_} how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): "))
+                        #below we entering the comparison value into matrix
+                        if preference == options[i]: #we must be going along row wise so the first option so optionp[i] must be the value that signals row. In the criteria one we had to account for goal being the forst element in list
+                            #if we prefer option[i] to option[j] then the value of the comparison is entered into the matrix as is because it is the numerator
                             matrix_element = comparison
                         else:
+                            #if we prefer option[j] to option[i] then the value of the comparison is entered into the matrix as 1/comparison because it is the denominator
                             matrix_element =1/comparison
 
-                        try:
-                            matrix_element = float(matrix_element)
-                            if 1 < matrix_element < 9:
+                        try: #this block enters the values into the matrix
+                            #this block is to catch the error when the user inputs a non numerical value
+                            #this block needs improvement somehow
+                            matrix_element = float(matrix_element) #it breaks here
+                            #
+                            if 1 <= matrix_element <= 9 or 1/9 <= matrix_element <= 1/2:
                                 judgement_matrix[i, j] = matrix_element
                                 judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
                                 matrix_element_status = True
-
+                
 
                         except ValueError:  #will this work if i dont add a number?
                             print("Error!! \n input numerical value")
@@ -319,11 +342,11 @@ for _ in criteria :
                         
 
             
-    pv = priority_vector(judgement_matrix)
-    cr = consistency_ratio(judgement_matrix)
-    if cr > 0.1:
-        print(f'inconsistency detected in {_} matrix ')
-        consistency_corrector(judgement_matrix, pv, labels=options)
+        pv = priority_vector(judgement_matrix)
+        cr = consistency_ratio(judgement_matrix)
+        if cr > 0.1:
+            print(f'inconsistency detected in {_} matrix ')
+            consistency_corrector(judgement_matrix, pv, labels=options)
 
 
                     
@@ -361,11 +384,7 @@ print(final_pv)
 
 
 #Structure of AHP is there now your goal is to refine what you've done
-
-
-
-
-
+#does the goal matrix need a consistency check? No
 
 
 
