@@ -11,14 +11,16 @@ import numpy as np
 #from AHP import weights
 # Load Excel file into a DataFrame
 
-weights = []
-df = pd.read_excel("data.xlsx")
+weights = [] #must automate this somehow
 
-column_names = df.columns.tolist() #this is a list
+df = pd.read_excel("data.xlsx") #import the data
+
+column_names = df.columns.tolist() #this is a list of the names of the headers
 #create a diction of a list where the term is a generic namea and the def is the name from excel list with the coloumn as a vector
+var_col_name = {}
 for i in range(len(column_names)-2):
-    normalized_vector = (1/np.sum(df[column_names[i]].values)) * df[column_names[i]].values #The normalisation constant is wrong
-    var_col_name = {col_{i}: [column_names[i], normalized_vector * weights[i]]}
+    normalized_vector = (1/np.sqrt(np.sum(df[column_names[i]].values**2))) * df[column_names[i]].values #The normalisation constant is wrong
+    var_col_name[f'col_{i}'] = [column_names[i], normalized_vector * weights[i]]
 
 
 #Create the matrix
