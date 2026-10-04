@@ -1,5 +1,4 @@
 #import any csv
-## last column tells what to max and minimize
 #create variables for the headers
 # Create a vector from each column
 # Normalize the vectors
@@ -14,22 +13,28 @@ import numpy as np
 
 weights = [0.4, 0.2, 0.2, 0.2] #must automate this somehow
 
-df = pd.read_excel("data.xlsx") #import the data
+#df 1
+## column 1 is the alternative names
+## row 1 is the criteria names
 
-column_names = df.columns.tolist() #this is a list of the names of the headers
+
+df1 = pd.read_excel("data.xlsx", sheet_name="matrix") #import the data
+
+column_names = df1.columns.tolist() #this is a list of the names of the headers
 #create a dictionary of a list where the term is a generic namea and the def is the name from excel list with the coloumn as a vector
 var_col_name = {}
-for i in range(len(column_names)-1):
-    normalized_vector = (1/np.sqrt(np.sum(df[column_names[i]].values**2))) * df[column_names[i]].values 
+for i in range(1, len(column_names)):
+    normalized_vector = (1/np.sqrt(np.sum(df1[column_names[i]].values**2))) * df1[column_names[i]].values 
     var_col_name[f'col_{i}'] = [column_names[i], normalized_vector * weights[i]]
 
 
 #Create the matrix
 matrix = np.column_stack([col[1] for col in var_col_name])
 
-#the last col must tell you what to maximise or minimize this must all be for ideal case
-#everything else falls into opposite
-optimize_direc = df[column_names[-1]].tolist() 
+#figure out how to extract details from the next sheet and adjust 
+df2 = pd.read_excel("data.xlsx", sheet_name="optimize") #import the data
+
+optimize_direc = df2.iloc[1].tolist() 
 ideal_sol = []
 non_ideal_sol = []
 #go through each matrix 
@@ -65,4 +70,7 @@ def closeness(vec, ideal_vec, non_ideal_vec):
 
 
 
+#df 2
+## row 1 is the criteria names
+## row 2 is the optimization direction (max or min)
 
