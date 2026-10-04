@@ -1,3 +1,25 @@
+#Functions
+#Turn the above distances into vectors then computes the distances
+def closeness(vec, ideal_vec, non_ideal_vec):
+    ideal_sum = 0
+    non_ideal_sum = 0
+    for j in range(ideal_vec):
+        ideal_sum += (vec[j] - ideal_vec[j])**2
+        non_ideal_sum += (vec[j] - non_ideal_vec[j])**2
+
+    S_neg = np.sqrt(non_ideal_sum)
+    S_pos = np.sqrt(ideal_sum)
+    C = S_neg/(S_neg+S_pos)
+
+    return C
+
+#turn transform vectors elements in csv into floats
+def Tofloat(vec):
+    for i in len(vec):
+        vec[i] = vec[i].replace(",",".")
+    return vec
+
+
 #import any csv
 #create variables for the headers
 # Create a vector from each column
@@ -17,22 +39,29 @@ weights = [0.4, 0.2, 0.2, 0.2] #must automate this somehow
 ## column 1 is the alternative names
 ## row 1 is the criteria names
 
+#Import data
+df1 = pd.read_csv("Test_data_matrix.csv", sep=";") #import the data
 
-df1 = pd.read_excel("data.xlsx", sheet_name="matrix") #import the data
-
+#transform data
 column_names = df1.columns.tolist() #this is a list of the names of the headers
 #create a dictionary of a list where the term is a generic namea and the def is the name from excel list with the coloumn as a vector
+print(df1[column_names[1]].str.replace(',', '.').astype(float))#this works but change convert for all elements to be floats
+
+
+'''
 var_col_name = {}
 for i in range(1, len(column_names)):
-    normalized_vector = (1/np.sqrt(np.sum(df1[column_names[i]].values**2))) * df1[column_names[i]].values 
+    normalized_vector = 1/np.linalg.norm(df1[column_names[i]].to_numpy()) * df1[column_names[i]].values 
     var_col_name[f'col_{i}'] = [column_names[i], normalized_vector * weights[i]]
+
+print(var_col_name)
 
 
 #Create the matrix
 matrix = np.column_stack([col[1] for col in var_col_name])
 
 #figure out how to extract details from the next sheet and adjust 
-df2 = pd.read_excel("data.xlsx", sheet_name="optimize") #import the data
+df2 = pd.read_csv("Test_data_optimize.csv") #import the data
 
 optimize_direc = df2.iloc[1].tolist() 
 ideal_sol = []
@@ -52,20 +81,8 @@ while len(ideal_sol) != len(matrix) and len(non_ideal_sol) != len(matrix): #Each
         ideal_sol.append(r_pos)
         non_ideal_sol.append(r_neg)
         i+=1
+'''
 
-#Turn the above distances into vectors then computes the distances
-def closeness(vec, ideal_vec, non_ideal_vec):
-    ideal_sum = 0
-    non_ideal_sum = 0
-    for j in range(ideal_vec):
-        ideal_sum += (vec[j] - ideal_vec[j])**2
-        non_ideal_sum += (vec[j] - non_ideal_vec[j])**2
-
-    S_neg = np.sqrt(non_ideal_sum)
-    S_pos = np.sqrt(ideal_sum)
-    C = S_neg/(S_neg+S_pos)
-
-    return C
 
 
 
