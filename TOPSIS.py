@@ -73,11 +73,14 @@ matrix = np.column_stack(matrix)
 print(matrix)
 
 #Create the matrix
-'''''
-#figure out how to extract details from the next sheet and adjust 
-df2 = pd.read_csv("Test_data_optimize.csv") #import the data
 
-optimize_direc = df2.iloc[1].tolist() 
+#figure out how to extract details from the next sheet and adjust 
+df2 = pd.read_csv(r"C:\Users\luvuy\Developer\Municipal app\Test_data_optimize.csv") #import the data
+
+#how do we access the columns
+optimize_direc = df2.iloc[0].tolist() 
+print(len(optimize_direc))
+''''
 ideal_sol = []
 non_ideal_sol = []
 #go through each matrix 
@@ -86,9 +89,11 @@ i = 0
 while len(ideal_sol) != len(matrix) and len(non_ideal_sol) != len(matrix): #Each list must have the same number alternatives being compared
     while i<len(optimize_direc): #i con place this in a better way to account for error
         if optimize_direc == 'max':
+            print('ping')
             r_pos = max(matrix[i]) #find the maximum value in list
             r_neg = min(matrix[i]) #find the maximum value in list
         elif optimize_direc == 'min':
+            print('bong')
             r_neg = max(matrix[i]) #find the maximum value in list
             r_pos = min(matrix[i]) #find the maximum value in list
 
@@ -96,8 +101,8 @@ while len(ideal_sol) != len(matrix) and len(non_ideal_sol) != len(matrix): #Each
         non_ideal_sol.append(r_neg)
         i+=1
 
-
 '''
+
 
 
 

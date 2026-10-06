@@ -1,2 +1,2 @@
-﻿solar irradiance;land cost;distance to grid; community acceptance
-max;min;min;max
+﻿solar irradiance,land cost,distance to grid, community acceptance
+max,min,min,max
