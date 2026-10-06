@@ -1,4 +1,4 @@
 ﻿location;solar irradiance;land cost;distance to grid; community acceptance
-l1;5,5;1200;15;8
-l2;6,2;1500;10;7
-l3;5,8;1000;20;9
+l1;5.5;1200;15;8
+l2;6.2;1500;10;7
+l3;5.8;1000;20;9

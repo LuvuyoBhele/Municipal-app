@@ -1,3 +1,4 @@
+import numpy as np
 #Functions
 #Turn the above distances into vectors then computes the distances
 def closeness(vec, ideal_vec, non_ideal_vec):
@@ -15,8 +16,8 @@ def closeness(vec, ideal_vec, non_ideal_vec):
 
 #turn transform vectors elements in csv into floats
 def Tofloat(vec):
-    for i in len(vec):
-        vec[i] = vec[i].replace(",",".")
+    #for i in len(vec):
+    vec = vec.replace(',', '.').astype(float).to_numpy()
     return vec
 
 
@@ -26,6 +27,7 @@ def Tofloat(vec):
 # Normalize the vectors
 # Multiply Each Vector with with the weights (vector scalar multilpication)
 # combine the vectors into a matrix
+#MAKE sure the csv is represents decimal places using points
 
 import pandas as pd
 import numpy as np
@@ -40,26 +42,38 @@ weights = [0.4, 0.2, 0.2, 0.2] #must automate this somehow
 ## row 1 is the criteria names
 
 #Import data
-df1 = pd.read_csv("Test_data_matrix.csv", sep=";") #import the data
+df1 = pd.read_csv(r"C:\Users\luvuy\Developer\Municipal app\Test_data_matrix.csv", sep=";") #import the data
 
 #transform data
 column_names = df1.columns.tolist() #this is a list of the names of the headers
 #create a dictionary of a list where the term is a generic namea and the def is the name from excel list with the coloumn as a vector
-print(df1[column_names[1]].str.replace(',', '.').astype(float))#this works but change convert for all elements to be floats
+
+#.str.replace(',', '.').astype(float). replaces the commas to decimal points then changes it to a float
+#.to_numpy() changes the database column into a vector
 
 
-'''
+matrix = []
 var_col_name = {}
 for i in range(1, len(column_names)):
-    normalized_vector = 1/np.linalg.norm(df1[column_names[i]].to_numpy()) * df1[column_names[i]].values 
-    var_col_name[f'col_{i}'] = [column_names[i], normalized_vector * weights[i]]
+    #turn all the database columns turn them into vectors
+    #find the norm of the vectors
+    #find the normalized vectors
+    #create a dicionary of the weighted vectors
+    vec = df1[column_names[i]].to_numpy()
+    print(f'The vector is \n{vec}')
+    norm_vec = np.linalg.norm(vec)
+    print(f'normalization constant is\n{norm_vec}')
+    normalized_vector = (1/norm_vec) * vec #fix this
+    print(f'normalized vector is \n{normalized_vector}')
+    var_col_name[i] = [column_names[i], normalized_vector * weights[i-1]]
+    matrix.append(normalized_vector)
 
-print(var_col_name)
-
+    
+matrix = np.column_stack(matrix)
+print(matrix)
 
 #Create the matrix
-matrix = np.column_stack([col[1] for col in var_col_name])
-
+'''''
 #figure out how to extract details from the next sheet and adjust 
 df2 = pd.read_csv("Test_data_optimize.csv") #import the data
 
@@ -81,9 +95,9 @@ while len(ideal_sol) != len(matrix) and len(non_ideal_sol) != len(matrix): #Each
         ideal_sol.append(r_pos)
         non_ideal_sol.append(r_neg)
         i+=1
+
+
 '''
-
-
 
 
 
