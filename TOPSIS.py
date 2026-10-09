@@ -108,8 +108,22 @@ print(f'the ideal sol: {ideal_sol}')
 print(f'non_ideal_sol: {non_ideal_sol}')
 
 
+#Now find the distance from the 
+#take a row i from the matrix i then take one of the ideal solutions 
+#subtract the vectors 
+#square each element and find the sum #bascially the norm?
+#take the foot
 
-#df 2
-## row 1 is the criteria names
-## row 2 is the optimization direction (max or min)
+Alt_IdealSol_dist = []
+Alt_nonIdealSol_dist = []
 
+for vec in matrix:
+    Sep_vec_ideal = vec - ideal_sol
+    S_pos = linalg.norm(Sep_vec_ideal)
+    Alt_IdealSol_dist.append(S_pos)
+
+    Sep_vec_nonIdeal = vec - non_ideal_sol
+    S_neg = linalg.norm(Sep_vec_nonIdeal)
+    Alt_nonIdealSol_dist.append(S_neg)
+
+print(len(Alt_IdealSol_dist))
