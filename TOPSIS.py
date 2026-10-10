@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import linalg
 #Functions
 #Turn the above distances into vectors then computes the distances
 def closeness(vec, ideal_vec, non_ideal_vec):
@@ -52,6 +53,11 @@ column_names = df1.columns.tolist() #this is a list of the names of the headers
 #.to_numpy() changes the database column into a vector
 
 
+print(f'the number of column names are: {len(column_names)} \n and the column names are \n {column_names}')
+
+
+
+
 matrix = []
 var_col_name = {}
 for i in range(1, len(column_names)):
@@ -60,7 +66,7 @@ for i in range(1, len(column_names)):
     #find the normalized vectors
     #create a dicionary of the weighted vectors
     vec = df1[column_names[i]].to_numpy()
-    print(f'The vector is \n{vec}')
+    print(f'The length of the vector is {len(vec)} \nthe vector is \n{vec}')
     norm_vec = np.linalg.norm(vec)
     print(f'normalization constant is\n{norm_vec}')
     normalized_vector = (1/norm_vec) * vec #fix this
@@ -69,7 +75,8 @@ for i in range(1, len(column_names)):
     matrix.append(normalized_vector)
 
     
-matrix = np.column_stack(matrix)
+matrix = np.column_stack(matrix)#1 row represents an alternative
+matrix = matrix.T
 print(matrix)
 
 #Create the matrix
@@ -114,11 +121,11 @@ print(f'non_ideal_sol: {non_ideal_sol}')
 #square each element and find the sum #bascially the norm?
 #take the foot
 
-Alt_IdealSol_dist = []
-Alt_nonIdealSol_dist = []
+Alt_IdealSol_dist = [] #S+
+Alt_nonIdealSol_dist = [] #S-
 
 for vec in matrix:
-    Sep_vec_ideal = vec - ideal_sol
+    Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
     S_pos = linalg.norm(Sep_vec_ideal)
     Alt_IdealSol_dist.append(S_pos)
 
@@ -126,4 +133,12 @@ for vec in matrix:
     S_neg = linalg.norm(Sep_vec_nonIdeal)
     Alt_nonIdealSol_dist.append(S_neg)
 
-print(len(Alt_IdealSol_dist))
+print(Alt_IdealSol_dist)
+
+
+final = []
+for i in range(len(Alt_IdealSol_dist)):
+    C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
+    final.append(C)
+
+print(final)
