@@ -6,9 +6,6 @@ import numpy as np
 # explain where the problem might be? if the consistency_ratio doesn't change for all choices that implies i should change the criteria right? The option of choosing to chnage criteria weight or pairwise must happen here.
 # in the correction it uses goal as something we must change which is wrong
 
-
-
-
 def priority_vector(matrix):
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals)
@@ -280,13 +277,14 @@ for _ in criteria : #give this underscore a more descriptive name because it hel
                         matrix_element_status = True
         pv = priority_vector(judgement_matrix)
         cr = consistency_ratio(judgement_matrix)
-        #if cr > 0.1:
-        #    print(f'inconsistency detected in {_} matrix ')
-        #    consistency_corrector(judgement_matrix, pv, labels=criteria[1:]) #problem is this starts with goal and we don't care for that when we finding values to change.
-                                
+        if cr > 0.1:
+            print(f'inconsistency detected in {_} matrix ')
+            consistency_corrector(judgement_matrix, pv, labels=criteria[1:]) #problem is this starts with goal and we don't care for that when we finding values to change.
+        print(pv) #weights we want to use
 
 
-                        
+
+'''                        
 
     else:
         judgement_matrix = np.zeros((len(options), len(options)))
@@ -348,11 +346,10 @@ for _ in criteria : #give this underscore a more descriptive name because it hel
             print(f'inconsistency detected in {_} matrix ')
             consistency_corrector(judgement_matrix, pv, labels=options)
 
-
                     
-    print(judgement_matrix)
+print(judgement_matrix)
 
-    criteria_matrix[_] = [judgement_matrix, pv, cr]
+criteria_matrix[_] = [judgement_matrix, pv, cr]
 
 #Now we can calculate the priority vector and consistence ratio for each criterion and the overall priority vector
 #for _ in criteria_matrix.keys():
@@ -385,8 +382,7 @@ print(final_pv)
 
 #Structure of AHP is there now your goal is to refine what you've done
 #does the goal matrix need a consistency check? No
-
-
+'''
 
 
 
