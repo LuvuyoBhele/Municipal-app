@@ -1,0 +1,66 @@
+<mxfile host="65bd71144e">
+    <diagram id="7dwKKz3ZzdNxCt-ydg2O" name="Page-1">
+        <mxGraphModel dx="1005" dy="609" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="czQwkazMzesYcmFGVp6A-25" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-3" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-12" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Start program" vertex="1">
+                    <mxGeometry height="80" width="120" x="230" y="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-26" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-12" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-17" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-29" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-12" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-18" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Ask user to input excel file or input data manually" vertex="1">
+                    <mxGeometry height="60" width="120" x="230" y="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-27" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-17" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-19" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-17" parent="1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;" value="Excel input" vertex="1">
+                    <mxGeometry height="80" width="80" x="90" y="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-30" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-18" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-23" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-18" parent="1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;" value="manual input" vertex="1">
+                    <mxGeometry height="80" width="80" x="425" y="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-28" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-19" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-24" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-19" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;shapeInside=1;fixedSize=1;" value="upload file that contains alternatives, critera and optimization direction" vertex="1">
+                    <mxGeometry height="90" width="130" x="65" y="265" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-33" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-23" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="czQwkazMzesYcmFGVp6A-31">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="465" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Ask questions to alternatives and criteria" vertex="1">
+                    <mxGeometry height="60" width="120" x="405" y="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-32" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-24" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-31" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="process data to get alternatives and criteria in file" vertex="1">
+                    <mxGeometry height="60" width="120" x="70" y="390" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-35" edge="1" parent="1" source="czQwkazMzesYcmFGVp6A-31" style="edgeStyle=none;html=1;" target="czQwkazMzesYcmFGVp6A-34" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-31" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Run AHP to get weights" vertex="1">
+                    <mxGeometry height="60" width="120" x="270" y="390" as="geometry"/>
+                </mxCell>
+                <mxCell id="czQwkazMzesYcmFGVp6A-34" parent="1" style="whiteSpace=wrap;html=1;rounded=0;" value="run TOPSIS" vertex="1">
+                    <mxGeometry height="60" width="120" x="270" y="530" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
