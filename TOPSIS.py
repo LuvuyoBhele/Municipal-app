@@ -305,7 +305,7 @@ for i in range(0,len(criteria)-1): #Represents a row index so this is what the o
                 matrix_element_status = True
     print(judgement_matrix)
 pv = priority_vector(judgement_matrix)
-cr = consistency_ratio(judgement_matrix)
+cr = consistency_ratio(judgement_matrix)#must this always be positive?
 print(judgement_matrix)
 if cr > 0.1:
     print(f'inconsistency detected in goal matrix ')
