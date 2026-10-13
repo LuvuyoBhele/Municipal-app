@@ -279,7 +279,7 @@ for i in range(0,len(criteria)-1): #Represents a row index so this is what the o
             #make the reference object clear > 1 implies reference object is superior?
             matrix_element_status = False #can make check more robust by checking if the value is a float and between 1 and 9
             while matrix_element_status == False:
-                #choose what you feel is better
+                    #choose what you feel is better
                 preference = input(f'based on goal, what is more important {criteria[i+1]} or {criteria[j+1]}? ') #
                 #check if the answer is exact
                 while preference != criteria[i+1] and preference != criteria[j+1]:
@@ -303,12 +303,14 @@ for i in range(0,len(criteria)-1): #Represents a row index so this is what the o
                 judgement_matrix[i, j] = matrix_element
                 judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
                 matrix_element_status = True
-    pv = priority_vector(judgement_matrix)
-    cr = consistency_ratio(judgement_matrix)
-    if cr > 0.1:
-        print(f'inconsistency detected in goal matrix ')
-        consistency_corrector(judgement_matrix, pv, labels=criteria[1:]) #problem is this starts with goal and we don't care for that when we finding values to change.
-    print(pv) #weights we want to use
+    print(judgement_matrix)
+pv = priority_vector(judgement_matrix)
+cr = consistency_ratio(judgement_matrix)
+print(judgement_matrix)
+if cr > 0.1:
+    print(f'inconsistency detected in goal matrix ')
+    consistency_corrector(judgement_matrix, pv, labels=criteria[1:]) #problem is this starts with goal and we don't care for that when we finding values to change.
+print(f'the weights are: {pv}\nthe consistency ratio is {cr}') #weights we want to use
 
 #
 #
@@ -346,7 +348,7 @@ for i in range(0,len(criteria)-1): #Represents a row index so this is what the o
 #print(matrix)
 #
 ##Create the matrix
-#
+
 ##figure out how to extract details from the next sheet and adjust 
 #df2 = pd.read_csv(r"C:\Users\luvuy\Developer\Municipal app\Test_data_optimize.csv") #import the data
 #
