@@ -106,6 +106,7 @@ def consistency_corrector(matrix, ev, labels=None):
 
         matrix[i, j] = new_value
         matrix[j, i] = 1 / new_value
+        print(f'new consistency ratio is :{consistency_ratio(matrix)}')
 
     print("Consistency ratio is now acceptable.")
 
@@ -141,8 +142,8 @@ def og_consistency_corrector(matrix, ev):
         updated_element = matrix[matrix_element_position[0],matrix_element_position[0]]
 
         #here we must check consistency ratio until we get what we want
-        validity_check = consistency_ratio(matrix)
-        if consistency_ratio(matrix)<0.1:
+        validity_check = consistency_ratio(matrix)  
+        if validity_check<0.1:
             element_update_valid = True
         else:
             element_update_valid = False
@@ -225,7 +226,7 @@ print(f'The options are {options}')
 #num_criteria_set = False #you'll have to change this because its only for when you're inputing manually
 #while num_criteria_set == False:
 
-num_criteria =len(column_names)-1 #input("How many criteria do you want to compare? (Enter a number): ") #put the inputs from excel file here
+num_criteria =len(column_names[1:]) #input("How many criteria do you want to compare? (Enter a number): ") #put the inputs from excel file here
 print(f'number of criteria: {num_criteria}')
 
 #    try:
@@ -250,7 +251,7 @@ print(f'number of criteria: {num_criteria}')
 # meaningful so if there's not data we need to ask user to input
 
 
-criteria = ['goal'] + column_names[0:]#place holder
+criteria = ['goal'] + column_names[1:]#place holder
 
 criteria_matrix = {}
 
@@ -316,7 +317,7 @@ print(f'the weights are: {pv}\nthe consistency ratio is {cr}') #weights we want 
 #
 #
 #
-#weights = [0.4, 0.2, 0.2, 0.2] #must automate this somehow
+weights = pv[1:] #must automate this somehow
 #
 ##df 1
 ### column 1 is the alternative names
@@ -326,87 +327,87 @@ print(f'the weights are: {pv}\nthe consistency ratio is {cr}') #weights we want 
 #
 #
 #
-#matrix = []
-#var_col_name = {}
-#for i in range(1, len(column_names)):
+matrix = []
+var_col_name = {}
+for i in range(1, len(column_names[1:])):
 #    #turn all the database columns turn them into vectors
 #    #find the norm of the vectors
 #    #find the normalized vectors
 #    #create a dicionary of the weighted vectors
-#    vec = df1[column_names[i]].to_numpy()
-#    print(f'The length of the vector is {len(vec)} \nthe vector is \n{vec}')
-#    norm_vec = np.linalg.norm(vec)
-#    print(f'normalization constant is\n{norm_vec}')
-#    normalized_vector = (1/norm_vec) * vec #fix this
-#    print(f'normalized vector is \n{normalized_vector}')
-#    var_col_name[i] = [column_names[i], normalized_vector * weights[i-1]]
-#    matrix.append(normalized_vector)
+    vec = df1[column_names[i]].to_numpy()
+    print(f'The length of the vector is {len(vec)} \nthe vector is \n{vec}')
+    norm_vec = np.linalg.norm(vec)
+    print(f'normalization constant is\n{norm_vec}')
+    normalized_vector = (1/norm_vec) * vec #fix this
+    print(f'normalized vector is \n{normalized_vector}')
+    var_col_name[i] = [column_names[i], normalized_vector * weights[i-1]]
+    matrix.append(normalized_vector)
 #
 #    
-#matrix = np.column_stack(matrix)#1 row represents an alternative
-#matrix = matrix.T
-#print(matrix)
+matrix = np.column_stack(matrix)#1 row represents an alternative
+matrix = matrix.T
+print(matrix)
 #
 ##Create the matrix
 
 ##figure out how to extract details from the next sheet and adjust 
-#df2 = pd.read_csv(r"C:\Users\luvuy\Developer\Municipal app\Test_data_optimize.csv") #import the data
+df2 = pd.read_csv(r"C:\Users\luvuy\Developer\Municipal app\Test_data_optimize.csv") #import the data
 #
 ##how do we access the columns
-#optimize_direc = df2.iloc[0].tolist() 
-#print(len(optimize_direc))
+optimize_direc = df2.iloc[0].tolist() 
+print(len(optimize_direc))
+
+ideal_sol = []
+non_ideal_sol = []
+#go through each matrix 
 #
-#ideal_sol = []
-#non_ideal_sol = []
-##go through each matrix 
-#
-#i = 0
-#while len(ideal_sol) != len(matrix[0]) and len(non_ideal_sol) != len(matrix): #Each list must have the same number alternatives being compared
-#    if optimize_direc[i] == 'max':
-#        print('ping')
-#        r_pos = max(matrix[i]) #find the maximum value in list
-#        r_neg = min(matrix[i]) #find the maximum value in list
-#        ideal_sol.append(r_pos)
-#        non_ideal_sol.append(r_neg)
-#    elif optimize_direc[i] == 'min':
-#        print('bong')
-#        r_neg = max(matrix[i]) #find the maximum value in list
-#        r_pos = min(matrix[i]) #find the maximum value in list
-#        ideal_sol.append(r_pos)
-#        non_ideal_sol.append(r_neg)
-#    i+=1
-#    if i == len(matrix[0])+1:
-#        break
-#
-#
-#print(f'the ideal sol: {ideal_sol}')
-#print(f'non_ideal_sol: {non_ideal_sol}')
-#
-#
-##Now find the distance from the 
-##take a row i from the matrix i then take one of the ideal solutions 
-##subtract the vectors 
-##square each element and find the sum #bascially the norm?
-##take the foot
-#
-#Alt_IdealSol_dist = [] #S+
-#Alt_nonIdealSol_dist = [] #S-
-#
-#for vec in matrix:
-#    Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
-#    S_pos = linalg.norm(Sep_vec_ideal)
-#    Alt_IdealSol_dist.append(S_pos)
-#
-#    Sep_vec_nonIdeal = vec - non_ideal_sol
-#    S_neg = linalg.norm(Sep_vec_nonIdeal)
-#    Alt_nonIdealSol_dist.append(S_neg)
-#
-#print(Alt_IdealSol_dist)
-#
-#
-#final = []
-#for i in range(len(Alt_IdealSol_dist)):
-#    C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
-#    final.append(C)
-#
-#print(final)
+i = 0
+while len(ideal_sol) != len(matrix[0]) and len(non_ideal_sol) != len(matrix): #Each list must have the same number alternatives being compared
+    if optimize_direc[i] == 'max':
+        print('ping')
+        r_pos = max(matrix[i]) #find the maximum value in list
+        r_neg = min(matrix[i]) #find the maximum value in list
+        ideal_sol.append(r_pos)
+        non_ideal_sol.append(r_neg)
+    elif optimize_direc[i] == 'min':
+        print('bong')
+        r_neg = max(matrix[i]) #find the maximum value in list
+        r_pos = min(matrix[i]) #find the maximum value in list
+        ideal_sol.append(r_pos)
+        non_ideal_sol.append(r_neg)
+    i+=1
+    if i == len(matrix[0])+1:
+        break
+
+
+print(f'the ideal sol: {ideal_sol}')
+print(f'non_ideal_sol: {non_ideal_sol}')
+
+
+#Now find the distance from the 
+#take a row i from the matrix i then take one of the ideal solutions 
+#subtract the vectors 
+#square each element and find the sum #bascially the norm?
+#take the foot
+
+Alt_IdealSol_dist = [] #S+
+Alt_nonIdealSol_dist = [] #S-
+
+for vec in matrix:
+    Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
+    S_pos = linalg.norm(Sep_vec_ideal)
+    Alt_IdealSol_dist.append(S_pos)
+
+    Sep_vec_nonIdeal = vec - non_ideal_sol
+    S_neg = linalg.norm(Sep_vec_nonIdeal)
+    Alt_nonIdealSol_dist.append(S_neg)
+
+print(Alt_IdealSol_dist)
+
+
+final = []
+for i in range(len(Alt_IdealSol_dist)):
+    C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
+    final.append(C)
+
+print(final)
