@@ -2,19 +2,8 @@ import numpy as np
 import pandas as pd
 from numpy import linalg
 
-#import any csv
-#create variables for the headers
-# Create a vector from each column
-# Normalize the vectors
-# Multiply Each Vector with with the weights (vector scalar multilpication)
-# combine the vectors into a matrix
-#MAKE sure the csv is represents decimal places using points
-
-
-
-# from AHP import weights
-# Load Excel file into a DataFrame
-# plan the data structure to be used in the app
+#so now i wanna be able to change any of the ahp comparisons but also have the hint on what to change
+#i also want the output of the answers to be clean
 
 
 
@@ -169,103 +158,25 @@ print(f'the number of column names are: {len(column_names)} \n and the column na
 max_options = 500000
 max_criteria = 500000
 
-##How many alternatives do you want to compare?
-
-#make sure this process is repeated so it doesn't break
-
-#- the goal here is to prevent the app from breaking when a user inputs the number of options that want they want to compare.
-
-#-we need to make sure that input is an integer, if its not an integer we want the user to try inputing again
-
-#-if user inputs zero then the caluclations won't work so force user to input real data
-
-
-
-
-#num_options_set = False
-#while num_options_set == False:
 
 num_options = len(df1[column_names[0]])#input("How many options do you want to compare? (Enter a number): ")
 print(f'the number of options {num_options}')
 
-#    try:
-#        num_options = int(num_options)
-#        if num_options < 2 or num_options > max_options:
-#         num_options_set = False
-#         print(f"pick between 1 and {max_options}" )
-#        else:
-#            num_options_set = True
-#    
-#    except ValueError:  #will this work if i dont add a number?
-#        print("Error!! \n input numerical value")
-#        num_options_set = False
 
-    
-##List alternatives you want to compare?
-
-#make sure this process is repeated so it doesn't break
-
-#- let input be any data object (does it matter?)
-#- user need to provide contextual data for analysis to be
-# meaningful so if there's not data we need to ask user to input
-
-
-options = first_col_list = df1[column_names[0]].tolist() #[] #place holder  #put the options here
+options = df1[column_names[0]].tolist() #[] #place holder  #put the options here
 print(f'The options are {options}')
 
-#for i in range(num_options):
-#    option = None
-#    while option == None:
-#        option = input(f"Enter option {i+1}: ")
-#    options.append(option)
-
-#On what criteria do you want to compare them?
-#make sure this process is repeated so it doesn't break
-
-
-#num_criteria_set = False #you'll have to change this because its only for when you're inputing manually
-#while num_criteria_set == False:
 
 num_criteria =len(column_names[1:]) #input("How many criteria do you want to compare? (Enter a number): ") #put the inputs from excel file here
 print(f'number of criteria: {num_criteria}')
 
-#    try:
-#        num_criteria = int(num_criteria)
-#        if num_criteria < 2 or num_criteria > max_criteria:
-#         num_criteria_set = False
-#         print(f"pick between 1 and {max_criteria}" )
-#        else:
-#            num_criteria_set = True
-#    
-#    except ValueError:  #will this work if i dont add a number?
-#        print("Error!! \ninput numerical value")
-#        num_criteria_set = False
 
-
-##List alternatives you want to compare?
-
-#make sure this process is repeated so it doesn't break
-
-#- let input be any data object (does it matter?)
-#- user need to provide contextual data for analysis to be
-# meaningful so if there's not data we need to ask user to input
 
 
 criteria = ['goal'] + column_names[1:]#place holder
 
 criteria_matrix = {}
 
-#for i in range(num_criteria):
-#    criterion = None
-#    while criterion == None:
-#        criterion = str(input(f"Enter criterion {i+1}:\n") )
-#        criteria.append(criterion)
-#
-##initialize the judgement matrices
-#
-#for _ in criteria : #give this underscore a more descriptive name because it helps with debugging and readability of code
-    #create judgement matrix for goal because the dimensions are defined differently to the options
-    #jugdement matrix
 
 judgement_matrix = np.zeros((len(criteria)-1, len(criteria)-1))
 print(len(criteria)-1)
@@ -390,8 +301,8 @@ print(f'non_ideal_sol: {non_ideal_sol}')
 #square each element and find the sum #bascially the norm?
 #take the foot
 
-Alt_IdealSol_dist = [] #S+
-Alt_nonIdealSol_dist = [] #S-
+Alt_IdealSol_dist = [] #S+ distance of solutions of each option
+Alt_nonIdealSol_dist = [] #S- distance of solutions of each option
 
 for vec in matrix:
     Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
@@ -402,12 +313,20 @@ for vec in matrix:
     S_neg = linalg.norm(Sep_vec_nonIdeal)
     Alt_nonIdealSol_dist.append(S_neg)
 
-print(Alt_IdealSol_dist)
+
+#I feel i can multiply by the normaliuzation constant to get the actual values
+
+print(f"The ratings of the ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the ideal solution
+print(f"The ratings of the non-ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the non ideal solution
 
 
-final = []
+final = {}
 for i in range(len(Alt_IdealSol_dist)):
     C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
-    final.append(C)
+    final[options[i]]=C
 
-print(final)
+final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
+
+print('Top 3 ideal solutions')
+for rank, (option, score) in enumerate(list(final.items())[:3], start=1):
+    print(f'{rank}. {option}: {score:.4f}')
