@@ -228,7 +228,7 @@ print(f'the weights are: {pv}\nthe consistency ratio is {cr}') #weights we want 
 #
 #
 #
-weights = pv[1:] #must automate this somehow
+weights = pv #must automate this somehow
 #
 ##df 1
 ### column 1 is the alternative names
