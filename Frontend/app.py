@@ -213,130 +213,146 @@ pv = priority_vector(judgement_matrix)
 cr = consistency_ratio(judgement_matrix)#must this always be positive?
 st.subheader('Analysis')
 st.write("weights")
-st.write(f"dimension of weights {len(pv)}")
+st.write(f'consistency ratio: {cr}')
+#st.write(f"dimension of weights {len(pv)}")
 
-weights = pv
+if cr < 0.1:
+    weights = pv
 
-plt.pie(weights, labels=column_names[1:], autopct='%1.1f%%', startangle=90)
+    plt.pie(weights, labels=column_names[1:], autopct='%1.1f%%', startangle=90)
 
-# 3. Add styling and show
-plt.title("Priority Distribution")
-plt.axis('equal')  # Ensures the pie chart is drawn as a circle
+    # 3. Add styling and show
+    plt.title("Priority Distribution")
+    plt.axis('equal')  # Ensures the pie chart is drawn as a circle
 
-st.pyplot(plt)
-plt.close()
+    st.pyplot(plt)
+    plt.close()
 
 
 
-matrix = []
-var_col_name = {}
-for i in range(1, len(column_names[1:])+1):
-#    #turn all the database columns turn them into vectors
-#    #find the norm of the vectors
-#    #find the normalized vectors
-#    #create a dicionary of the weighted vectors
-    vec = df1[column_names[i]].to_numpy()
+    matrix = []
+    var_col_name = {}
+    for i in range(1, len(column_names[1:])+1):
+    #    #turn all the database columns turn them into vectors
+    #    #find the norm of the vectors
+    #    #create a dicionary of the weighted vectors
+        vec = df1[column_names[i]].to_numpy()
+        #st.write(f'This is the vector column being normalized: {vec}')
+        
+        
+        #print(f'The length of the vector is {len(vec)} \nthe vector is \n{vec}')
+        norm_vec = np.linalg.norm(vec)
+        #st.write(f'The normalization factor: {norm_vec}')
+        #print(f'normalization constant is\n{norm_vec}')
+        normalized_vector = (1/norm_vec) * vec #
+        #st.write(normalized_vector)
+        #print(f'normalized vector is \n{normalized_vector}')
+        st.write(normalized_vector)
+        
+        matrix.append(normalized_vector* weights[i-1])
+    #
+    #    
+    matrix = np.column_stack(matrix)#1 row represents an alternative
+    #print(matrix)
+    #
+    ##Create the matrix
+
+
+    #
+    ##how do we access the columns
+    st.write(matrix)
+
+
+    ideal_sol = []
+    non_ideal_sol = []
+    #go through each matrix 
+
+
+    while len(ideal_sol) != len(matrix[0]) and len(non_ideal_sol) != len(matrix[0]): #Each list must have the same number alternatives being compared
+        for i in range(len(optimize_direc)):
+            if optimize_direc[i] == 'max':
+                st.write('ping')
+                r_pos = max(matrix.T[i]) #find the maximum value in list
+                r_neg = min(matrix.T[i]) #find the maximum value in list
+                ideal_sol.append(r_pos)
+                non_ideal_sol.append(r_neg)
+            elif optimize_direc[i] == 'min':
+                st.write('bong')
+                r_neg = max(matrix.T[i]) #find the maximum value in list
+                r_pos = min(matrix.T[i]) #find the maximum value in list
+                ideal_sol.append(r_pos)
+                non_ideal_sol.append(r_neg)
+
+        
+
+
+
+
+        
+        
+
+        
+    st.write(f'ideal solution vector: {ideal_sol}')
+    #here i want you tor print the line graph of each row in matrix
+    st.write(f'column name dimensions {len(column_names[1:])} \nnon-ideal sol dimensions: {len(non_ideal_sol)} \nnon-ideal sol dimensions: {len(non_ideal_sol)}')
+    plt.plot(column_names[1:],ideal_sol, color='green', marker='s', linestyle='-', label= 'ideal sol')
+    plt.plot(column_names[1:],non_ideal_sol, color='red', marker='s', linestyle='-', label= 'non-ideal sol')
+    i = 1
+    for vec in matrix:
+        #st.write(vec)
+        color = plt.cm.hsv((i - 1) / max(len(matrix.T), 1)) #what does this do
+        plt.plot(column_names[1:], vec, color=color, marker='o', linestyle='-.', linewidth=2, label=options[i-1], )
+        i+=1
+    # 3. Add titles and labels for clarity
+    plt.title("Ideal and Non-Ideal", fontsize=14)
+    plt.xlabel("X-Axis Label", fontsize=12)
+    plt.ylabel("Y-Axis Label", fontsize=12)
+    plt.legend()
+
+    st.pyplot(plt)
+    plt.close()
+
+
+    #print(f'the ideal sol: {ideal_sol}')
+    #print(f'non_ideal_sol: {non_ideal_sol}')
+
+
+    #Now find the distance from the 
+    #take a row i from the matrix i then take one of the ideal solutions 
+    #subtract the vectors 
+    #square each element and find the sum #bascially the norm?
+    #take the foot
+
+    Alt_IdealSol_dist = [] #S+ distance of solutions of each option
+    Alt_nonIdealSol_dist = [] #S- distance of solutions of each option
+    #
+
     
-    
-    #print(f'The length of the vector is {len(vec)} \nthe vector is \n{vec}')
-    norm_vec = np.linalg.norm(vec)
-    #print(f'normalization constant is\n{norm_vec}')
-    normalized_vector = (1/norm_vec) * vec #fix this
-    st.write(normalized_vector)
-    #print(f'normalized vector is \n{normalized_vector}')
-    var_col_name[i] = [column_names[i], normalized_vector * weights[i-1]]
-    matrix.append(normalized_vector)
-#
-#    
-matrix = np.column_stack(matrix)#1 row represents an alternative
-matrix = matrix.T # col represents an alternative
-#print(matrix)
-#
-##Create the matrix
+    for vec in matrix:
+        Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
+        S_pos = np.linalg.norm(Sep_vec_ideal)
+        Alt_IdealSol_dist.append(S_pos)
 
-
-#
-##how do we access the columns
-st.write(matrix)
-
-
-ideal_sol = []
-non_ideal_sol = []
-#go through each matrix 
-
-i = 0
-while len(ideal_sol) != len(matrix) and len(non_ideal_sol) != len(matrix): #Each list must have the same number alternatives being compared
-    if optimize_direc[i] == 'max':
-        #print('ping')
-        r_pos = max(matrix[i]) #find the maximum value in list
-        r_neg = min(matrix[i]) #find the maximum value in list
-        ideal_sol.append(r_pos)
-        non_ideal_sol.append(r_neg)
-    elif optimize_direc[i] == 'min':
-        #print('bong')
-        r_neg = max(matrix[i]) #find the maximum value in list
-        r_pos = min(matrix[i]) #find the maximum value in list
-        ideal_sol.append(r_pos)
-        non_ideal_sol.append(r_neg)
-    i+=1
-    
-st.write(f'ideal solution vector: {ideal_sol}')
-#here i want you tor print the line graph of each row in matrix
-st.write(f'column name dimensions {len(column_names[1:])} \nnon-ideal sol dimensions: {len(non_ideal_sol)} \nnon-ideal sol dimensions: {len(non_ideal_sol)}')
-plt.plot(column_names[1:],ideal_sol, color='green', marker='s', linestyle='-', label= 'ideal sol')
-plt.plot(column_names[1:],non_ideal_sol, color='red', marker='s', linestyle='-', label= 'non-ideal sol')
-i = 1
-for vec in matrix.T:
-    st.write(vec)
-    color = plt.cm.hsv((i - 1) / max(len(matrix.T), 1)) #what does this do
-    plt.plot(column_names[1:], vec, color=color, marker='o', linestyle='-.', linewidth=2, label=options[i-1], )
-    i+=1
-# 3. Add titles and labels for clarity
-plt.title("Ideal and Non-Ideal", fontsize=14)
-plt.xlabel("X-Axis Label", fontsize=12)
-plt.ylabel("Y-Axis Label", fontsize=12)
-plt.legend()
-
-st.pyplot(plt)
-plt.close()
-
-
-#print(f'the ideal sol: {ideal_sol}')
-#print(f'non_ideal_sol: {non_ideal_sol}')
-
-
-#Now find the distance from the 
-#take a row i from the matrix i then take one of the ideal solutions 
-#subtract the vectors 
-#square each element and find the sum #bascially the norm?
-#take the foot
-
-#Alt_IdealSol_dist = [] #S+ distance of solutions of each option
-#Alt_nonIdealSol_dist = [] #S- distance of solutions of each option
-#
-#for vec in matrix:
-#    Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
-#    S_pos = linalg.norm(Sep_vec_ideal)
-#    Alt_IdealSol_dist.append(S_pos)
-#
-#    Sep_vec_nonIdeal = vec - non_ideal_sol
-#    S_neg = linalg.norm(Sep_vec_nonIdeal)
-#    Alt_nonIdealSol_dist.append(S_neg)
-#
-#
-##I feel i can multiply by the normaliuzation constant to get the actual values
-#
-#print(f"The ratings of the ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the ideal solution
-#print(f"The ratings of the non-ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the non ideal solution
-#
-#
-#final = {}
-#for i in range(len(Alt_IdealSol_dist)):
-#    C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
-#    final[options[i]]=C
-#
-#final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
-#
-#print('Top 3 ideal solutions')
-#for rank, (option, score) in enumerate(list(final.items())[:3], start=1):
-#    print(f'{rank}. {option}: {score:.4f}')
+        Sep_vec_nonIdeal = vec - non_ideal_sol
+        S_neg = np.linalg.norm(Sep_vec_nonIdeal)
+        Alt_nonIdealSol_dist.append(S_neg)
+    #
+    #
+    ##I feel i can multiply by the normaliuzation constant to get the actual values
+    #
+    #print(f"The ratings of the ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the ideal solution
+    #print(f"The ratings of the non-ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the non ideal solution
+    #
+    #
+    final = {}
+    for i in range(len(Alt_IdealSol_dist)):
+        C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
+        final[options[i]]=C
+    #
+    final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
+    #
+    print('Top 3 ideal solutions')
+    for rank, (option, score) in enumerate(list(final.items())[:3], start=1):
+        st.write(f'{rank}. {option}: {score:.4f}')
+else:
+    st.write('you talking nonsense')
