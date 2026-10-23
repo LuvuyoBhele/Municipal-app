@@ -5,6 +5,10 @@ from numpy import linalg
 import matplotlib.pyplot as plt
 
 
+def set_preference(key, value):
+    st.session_state[key] = value
+
+
 def priority_vector(matrix):
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals)
@@ -148,7 +152,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     df1 = pd.read_csv(uploaded_file1)
     column_names = df1.columns.tolist()
     num_column = len(column_names)
-    st.write(f'number of column names {len(column_names)}')
+    #st.write(f'number of column names {len(column_names)}')
     options = df1[column_names[0]].tolist() #turns dataframe to list
     num_options = len(options)
 
@@ -156,8 +160,8 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     st.subheader("Data Preview")
     st.dataframe(df1) #fix the way it previews this data
     #give a summary of data in this matrix
-    st.write(f'the number of options: {num_options}')
-    st.write(f'the number of column: {num_column}')
+    #st.write(f'the number of options: {num_options}')
+    #st.write(f'the number of column: {num_column}')
 
     df2 = pd.read_csv(uploaded_file2)
     optimize_direc = df2.iloc[0].tolist() 
@@ -182,38 +186,52 @@ for i in range(0,len(criteria)-1): #Represents a row index so this is what the o
         elif i < j:
             #find ways to improve this here so it doesn't break
             #make the reference object clear > 1 implies reference object is superior?
-            matrix_element_status = False #can make check more robust by checking if the value is a float and between 1 and 9
-            while matrix_element_status == False:
-                    #choose what you feel is better
-                preference = st.text_input(f'based on goal, what is more important {criteria[i+1]} or {criteria[j+1]}? ') #
-                #check if the answer is exact
-                while preference != criteria[i+1] and preference != criteria[j+1]:
-                    st.write('Incorrect input! \n Inputs are case sensitive so enter the exact options')
-                    preference = st.button(f'based on goal, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
-                #Now we make the inputting of other options easy
-                #here we're making the pairwise comparison of the criteria
-                if preference == criteria[i+1]:
-                    not_preference = criteria[j+1]
-                else:
-                    not_preference = criteria[i+1]
-                #make asking the question fit the above variables
-                #rating of pereference
-                comparison = float(st.slider(f'in terms of goal how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ', min_value=1, max_value=9) )
-                while type(comparison) != float or comparison < 1  or 9 < comparison:
-                    comparison = float(st.slider(f"Error! Input numerical value (number) between [1,9] \n in terms of goal how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ", min_value=1, max_value=9))
-                if preference == criteria[i+1]:
-                    matrix_element = comparison
-                else:
-                    matrix_element =1/comparison
-                judgement_matrix[i, j] = matrix_element
-                judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
-                matrix_element_status = True
+            st.write(f'based on goal, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
+
+            preference_key = f"preference_{i}_{j}"
+            preference = st.session_state.get(preference_key)
+            left, right = st.columns(2)
+
+            left.button(
+                criteria[i + 1],
+                key=f"{preference_key}_left",
+                type="primary" if preference == criteria[i + 1] else "secondary",
+                on_click=set_preference,
+                args=(preference_key, criteria[i + 1]),
+            )
+            right.button(
+                criteria[j + 1],
+                key=f"{preference_key}_right",
+                type="primary" if preference == criteria[j + 1] else "secondary",
+                on_click=set_preference,
+                args=(preference_key, criteria[j + 1]),
+            )
+
+            if preference is None:
+                st.stop()
+
+            not_preference = (
+                criteria[j + 1] if preference == criteria[i + 1] else criteria[i + 1]
+            )
+            comparison = float(
+                st.slider(
+                    f'in terms of goal how much more important is {preference} to {not_preference} ? (Enter a value from 1 to 9): ',
+                    min_value=1,
+                    max_value=9,
+                )
+            )
+            if preference == criteria[i + 1]:
+                matrix_element = comparison
+            else:
+                matrix_element = 1 / comparison
+            judgement_matrix[i, j] = matrix_element
+            judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
 
 pv = priority_vector(judgement_matrix)
 cr = consistency_ratio(judgement_matrix)#must this always be positive?
 st.subheader('Analysis')
-st.write("weights")
-st.write(f'consistency ratio: {cr}')
+#st.write("weights")
+st.write(f'consistency ratio: {cr:.4f}')
 #st.write(f"dimension of weights {len(pv)}")
 
 if cr < 0.1:
@@ -247,7 +265,7 @@ if cr < 0.1:
         normalized_vector = (1/norm_vec) * vec #
         #st.write(normalized_vector)
         #print(f'normalized vector is \n{normalized_vector}')
-        st.write(normalized_vector)
+        #st.write(normalized_vector)
         
         matrix.append(normalized_vector* weights[i-1])
     #
@@ -260,7 +278,7 @@ if cr < 0.1:
 
     #
     ##how do we access the columns
-    st.write(matrix)
+    #st.write(matrix)
 
 
     ideal_sol = []
@@ -271,13 +289,13 @@ if cr < 0.1:
     while len(ideal_sol) != len(matrix[0]) and len(non_ideal_sol) != len(matrix[0]): #Each list must have the same number alternatives being compared
         for i in range(len(optimize_direc)):
             if optimize_direc[i] == 'max':
-                st.write('ping')
+                #st.write('ping')
                 r_pos = max(matrix.T[i]) #find the maximum value in list
                 r_neg = min(matrix.T[i]) #find the maximum value in list
                 ideal_sol.append(r_pos)
                 non_ideal_sol.append(r_neg)
             elif optimize_direc[i] == 'min':
-                st.write('bong')
+                #st.write('bong')
                 r_neg = max(matrix.T[i]) #find the maximum value in list
                 r_pos = min(matrix.T[i]) #find the maximum value in list
                 ideal_sol.append(r_pos)
@@ -292,9 +310,9 @@ if cr < 0.1:
         
 
         
-    st.write(f'ideal solution vector: {ideal_sol}')
+    #st.write(f'ideal solution vector: {ideal_sol}')
     #here i want you tor print the line graph of each row in matrix
-    st.write(f'column name dimensions {len(column_names[1:])} \nnon-ideal sol dimensions: {len(non_ideal_sol)} \nnon-ideal sol dimensions: {len(non_ideal_sol)}')
+    #st.write(f'column name dimensions {len(column_names[1:])} \nnon-ideal sol dimensions: {len(non_ideal_sol)} \nnon-ideal sol dimensions: {len(non_ideal_sol)}')
     plt.plot(column_names[1:],ideal_sol, color='green', marker='s', linestyle='-', label= 'ideal sol')
     plt.plot(column_names[1:],non_ideal_sol, color='red', marker='s', linestyle='-', label= 'non-ideal sol')
     i = 1
