@@ -273,7 +273,6 @@ if cr < 0.1:
     matrix = np.column_stack(matrix)#1 row represents an alternative
     #print(matrix)
     #
-    ##Create the matrix
 
 
     #
@@ -302,44 +301,68 @@ if cr < 0.1:
                 non_ideal_sol.append(r_neg)
 
         
+    criteria = column_names[1:]
+    location_names = list(dict.fromkeys(str(option) for option in options))
+    location_cmap = plt.get_cmap('tab20', max(len(location_names), 1))
+    location_colors = {
+        location: location_cmap(index)
+        for index, location in enumerate(location_names)
+    }
+    selected_criterion = st.selectbox('Select a criterion', criteria)
+    criterion_index = criteria.index(selected_criterion)
+    fig, ax = plt.subplots(figsize=(12, 6))
 
+    ax.bar(
+        options,
+        matrix[:, criterion_index],
+        color=[location_colors[str(option)] for option in options],
+        edgecolor='grey',
+    )
+    ax.axhline(
+        ideal_sol[criterion_index],
+        color='green',
+        linestyle='-',
+        linewidth=2,
+        label='Ideal solution',
+    )
+    ax.axhline(
+        non_ideal_sol[criterion_index],
+        color='red',
+        linestyle='-',
+        linewidth=2,
+        label='Non-ideal solution',
+    )
+    ax.set_title(f'{selected_criterion} by location')
+    ax.set_xlabel('Location', fontweight='bold', fontsize=15)
+    ax.set_ylabel('Weighted normalized value', fontweight='bold', fontsize=15)
+    ax.tick_params(axis='x', rotation=45)
+    ax.legend()
+    fig.tight_layout()
+    st.pyplot(fig)
+    plt.close(fig)
 
-
-
-        
-        
-
-        
-    #st.write(f'ideal solution vector: {ideal_sol}')
-    #here i want you tor print the line graph of each row in matrix
-    #st.write(f'column name dimensions {len(column_names[1:])} \nnon-ideal sol dimensions: {len(non_ideal_sol)} \nnon-ideal sol dimensions: {len(non_ideal_sol)}')
-    plt.plot(column_names[1:],ideal_sol, color='green', marker='s', linestyle='-', label= 'ideal sol')
-    plt.plot(column_names[1:],non_ideal_sol, color='red', marker='s', linestyle='-', label= 'non-ideal sol')
-    i = 1
-    for vec in matrix:
-        #st.write(vec)
-        color = plt.cm.hsv((i - 1) / max(len(matrix.T), 1)) #what does this do
-        plt.plot(column_names[1:], vec, color=color, marker='o', linestyle='-.', linewidth=2, label=options[i-1], )
-        i+=1
-    # 3. Add titles and labels for clarity
-    plt.title("Ideal and Non-Ideal", fontsize=14)
-    plt.xlabel("X-Axis Label", fontsize=12)
-    plt.ylabel("Y-Axis Label", fontsize=12)
-    plt.legend()
-
-    st.pyplot(plt)
-    plt.close()
-
-
-    #print(f'the ideal sol: {ideal_sol}')
-    #print(f'non_ideal_sol: {non_ideal_sol}')
-
-
-    #Now find the distance from the 
-    #take a row i from the matrix i then take one of the ideal solutions 
-    #subtract the vectors 
-    #square each element and find the sum #bascially the norm?
-    #take the foot
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(criteria, ideal_sol, color='green', marker='s', linestyle='-', label='Ideal')
+    ax.plot(criteria, non_ideal_sol, color='red', marker='s', linestyle='-', label='Non-ideal')
+    for option_index, vec in enumerate(matrix):
+        option = options[option_index]
+        ax.plot(
+            criteria,
+            vec,
+            color=location_colors[str(option)],
+            marker='o',
+            linestyle='-.',
+            linewidth=2,
+            label=option,
+        )
+    ax.set_title('Ideal and Non-Ideal Comparison')
+    ax.set_xlabel('Criteria', fontsize=12)
+    ax.set_ylabel('Weighted normalized value', fontsize=12)
+    ax.tick_params(axis='x', rotation=45)
+    ax.legend()
+    fig.tight_layout()
+    st.pyplot(fig)
+    plt.close(fig)
 
     Alt_IdealSol_dist = [] #S+ distance of solutions of each option
     Alt_nonIdealSol_dist = [] #S- distance of solutions of each option
