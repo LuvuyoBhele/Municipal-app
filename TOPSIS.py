@@ -256,7 +256,7 @@ for i in range(1, len(column_names[1:])):
 #
 #    
 matrix = np.column_stack(matrix)#1 row represents an alternative
-matrix = matrix.T
+#matrix = matrix.T
 print(matrix)
 #
 ##Create the matrix
@@ -273,7 +273,7 @@ non_ideal_sol = []
 #go through each matrix 
 #
 i = 0
-while len(ideal_sol) != len(matrix[0]) and len(non_ideal_sol) != len(matrix): #Each list must have the same number alternatives being compared
+while len(ideal_sol) != len(matrix[0]) and len(non_ideal_sol) != len(matrix[0]): #Each list must have the same number alternatives being compared
     if optimize_direc[i] == 'max':
         print('ping')
         r_pos = max(matrix[i]) #find the maximum value in list
