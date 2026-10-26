@@ -153,6 +153,42 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     column_names = df1.columns.tolist()
     num_column = len(column_names)
     #st.write(f'number of column names {len(column_names)}')
+
+    invalid_entries = df1[df1.isnull]
+    #check if both colummns are the same.
+
+    if len(invalid_entries)>0:
+        st.write('Matrix CSV has null entries')
+        st.write(df1[df1.isnull]) #is this correct
+        #print the null entries
+        st.write('Do you want to continue with analysis without those entries')
+        clean_data_key = 'clean_data'
+        clean_data = st.session_state.get(clean_data_key)
+        left, right = st.columns(2)
+        left.button(
+            'Yes',
+            key=f"{clean_data_key}_left",
+            type="primary" if clean_data_key == 'Yes' else "secondary",
+            on_click=set_preference,
+            args=(clean_data_key, 'Yes'),
+        )
+        right.button(
+            'No',
+            key=f"{clean_data_key}_right",
+            type="primary" if clean_data_key == 'No' else "secondary",
+            on_click=set_preference,
+            args=(clean_data_key, 'No'),
+        )
+        
+    if clean_data == 'No':
+        df1 = df1.dropna
+        st.write('data has been cleaned')
+
+    else:
+        st.write('Reupload the files with complete entries')
+
+
+
     options = df1[column_names[0]].tolist() #turns dataframe to list
     num_options = len(options)
 
@@ -173,6 +209,21 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
 
 
 
+#data cleaning
+#make sure you can identify rows with missing entries
+# - sort the data so that those NaN values show at the top
+# - find the number of entries that are empty. ( give a reason ?)
+
+#ask user if he wants to continue or not
+#make sure the colums you're analyzing fit the same number of rows as optimizer
+#if not tell the user there is a problem
+
+
+
+
+
+
+
 max_options = 500000
 max_criteria = 500000   
 
@@ -189,6 +240,7 @@ for i in range(0,len(criteria)-1): #Represents a row index so this is what the o
             st.write(f'based on goal, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
 
             preference_key = f"preference_{i}_{j}"
+            st.write(f'preference_key: {preference_key}')
             preference = st.session_state.get(preference_key)
             left, right = st.columns(2)
 
