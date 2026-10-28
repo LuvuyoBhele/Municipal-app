@@ -197,7 +197,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
             args=(clean_data_key, 'No'),
         )
         
-        if clean_data == 'No':
+        if clean_data == 'Yes':
             df1 = df1.dropna
             st.write('data has been cleaned')
     
