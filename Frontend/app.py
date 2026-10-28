@@ -171,12 +171,12 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     num_column = len(column_names)
     #st.write(f'number of column names {len(column_names)}')
 
-    invalid_entries = df1[df1.isnull()]
+    invalid_entries = df1[df1.isna().any(axis=1)] #problem is here
     #check if both colummns are the same.
 
     if len(invalid_entries)>0:
         st.write('Matrix CSV has null entries')
-        st.write(df1[df1.isnull]) #is this correct
+        st.write(invalid_entries) #is this correct
         #print the null entries
         st.write('Do you want to continue with analysis without those entries')
         clean_data_key = 'clean_data'
