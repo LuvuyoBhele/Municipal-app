@@ -169,7 +169,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     st.write(f'Criteria on both CSV match')
     column_names = df1.columns.tolist()
     num_column = len(column_names)
-    st.write(f'number of column names {len(column_names)}')
+    #st.write(f'number of column names {len(column_names)}')
 
     invalid_entries = df1[df1.isna().any(axis=1)] #problem is here
     #check if both colummns are the same.
