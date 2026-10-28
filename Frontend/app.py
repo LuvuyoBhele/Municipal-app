@@ -200,7 +200,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
         if clean_data == 'Yes':
             df1 = df1.dropna
             st.write('data has been cleaned')
-            st.write(column_names[0])
+            st.write(df1)
             options = df1[column_names[0]].tolist() #turns dataframe to list
             num_options = len(options)
         
