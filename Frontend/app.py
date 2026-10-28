@@ -199,6 +199,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
         
         if clean_data == 'Yes':
             df1 = df1.dropna()
+            df1 = df1.drop_duplicates()
             st.write('data has been cleaned')
             options = df1[column_names[0]].tolist() #turns dataframe to list
             num_options = len(options)
@@ -251,7 +252,6 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                         st.write(f'based on goal, what is more important {criteria[i+1]} or {criteria[j+1]}? ')
     
                         preference_key = f"preference_{i}_{j}"
-                        st.write(f'preference_key: {preference_key}')
                         preference = st.session_state.get(preference_key)
                         left, right = st.columns(2)
     
