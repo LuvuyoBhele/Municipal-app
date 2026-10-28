@@ -176,7 +176,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
 
     if len(invalid_entries)>0:
         st.write('Matrix CSV has null entries')
-        st.write(df1[df1.isnull()]) #is this correct
+        st.write(df1[df1.isnull]) #is this correct
         #print the null entries
         st.write('Do you want to continue with analysis without those entries')
         clean_data_key = 'clean_data'
