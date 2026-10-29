@@ -455,9 +455,9 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                     final[options[i]]=C
                     rank.append(C)
                 
-                final = dict(sorted(final.items(), key=lambda item: item[1], reverse=False))
+                final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
                 df1['score']=rank
-                score_board = df1.sort_values(by='score', ascending=True)
+                score_board = df1.sort_values(by='score', ascending=false)
                 st.write('Rankings')
                 st.dataframe(score_board)
                 print('Top 3 ideal solutions')
