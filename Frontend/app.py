@@ -449,12 +449,17 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                 #
                 #
                 final = {}
+                rank = []
                 for i in range(len(Alt_IdealSol_dist)):
                     C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
                     final[options[i]]=C
-                #
+                    rank.append(C)
+                
                 final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
-                #
+                df1['score']=rank
+                score_board = df1.sort_values(by='score')
+                st.write('Rankings')
+                st.write('score_board')
                 print('Top 3 ideal solutions')
                 for rank, (option, score) in enumerate(list(final.items())[:3], start=1):
                     st.write(f'{rank}. {option}: {score:.4f}')
