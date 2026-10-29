@@ -459,7 +459,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                 df1['score']=rank
                 score_board = df1.sort_values(by='score')
                 st.write('Rankings')
-                st.write('score_board')
+                st.write(f'{score_board}')
                 print('Top 3 ideal solutions')
                 for rank, (option, score) in enumerate(list(final.items())[:3], start=1):
                     st.write(f'{rank}. {option}: {score:.4f}')
