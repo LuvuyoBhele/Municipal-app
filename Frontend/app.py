@@ -210,7 +210,6 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     invalid_entries = df1[df1.isna().any(axis=1)]
     if len(invalid_entries) == 0:
     
-    st.divider()
 
     st.subheader("Data Preview")
     st.dataframe(df1) #fix the way it previews this data
