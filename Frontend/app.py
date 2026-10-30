@@ -462,13 +462,29 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                 df1['score']=rank
                 score_board = df1.sort_values(by='score', ascending=False)
                 st.write(f"Enter a number between 0 and {len(score_board)} (0 = display all data).")
-                number_rows = st.number_input(f'write number')
+                number_rows = st.number_input(
+                    label="Enter an integer",
+                    min_value=0,
+                    max_value=num_options,
+                    value=3,  # Strict integer default type
+                    step=1     # Increments/decrements by whole numbers
+                    )              
                 while type(number_rows) != int:
                     st.write(f'{number_rows} is not a whole number. Write a whole number')
-                    number_rows = st.number_input(f'write a number')
+                    number_rows = st.number_input(label="Enter an integer",
+                                        min_value=0,
+                                        max_value=num_options,
+                                        value=3,  # Strict integer default type
+                                        step=1     # Increments/decrements by whole numbers
+                                        )
                 while number_rows < 0:
                     st.write(f'enter a non-zero number')
-                    number_rows = st.number_input(f'write a number')
+                    number_rows = st.number_input(label="Enter an integer",
+                                        min_value=0,
+                                        max_value=num_options,
+                                        value=3,  # Strict integer default type
+                                        step=1     # Increments/decrements by whole numbers
+                                        )       
                 st.subheader('Rankings')
                 st.dataframe(score_board.head[number_rows])
             else:
