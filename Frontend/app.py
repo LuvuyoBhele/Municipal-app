@@ -204,7 +204,8 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
             options = df1[column_names[0]].tolist() #turns dataframe to list
             num_options = len(options)
         
-        
+            st.divider()
+
             st.subheader("Data Preview")
             st.dataframe(df1) #fix the way it previews this data
             #give a summary of data in this matrix
@@ -454,15 +455,22 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                     C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
                     final[options[i]]=C
                     rank.append(C)
+
+                st.divider()
                 
                 final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
                 df1['score']=rank
                 score_board = df1.sort_values(by='score', ascending=False)
-                st.write('Rankings')
-                st.dataframe(score_board)
-                print('Top 3 ideal solutions')
-                for rank, (option, score) in enumerate(list(final.items())[:3], start=1):
-                    st.write(f'{rank}. {option}: {score:.4f}')
+                st.write(f"Enter a number between 0 and {len(score_board)} (0 = display all data).")
+                number_rows = st.number_input(f'write number')
+                while type(number_rows) != int:
+                    st.write(f'{number_rows} is not a whole number. Write a whole number')
+                    number_rows = st.number_input(f'write a number')
+                while number_rows < 0:
+                    st.write(f'enter a non-zero number')
+                    number_rows = st.number_input(f'write a number')
+                st.subheader('Rankings')
+                st.dataframe(score_board.head[number_rows])
             else:
                 st.write('you talking nonsense')
     
