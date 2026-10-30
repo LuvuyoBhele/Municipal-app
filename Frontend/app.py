@@ -169,7 +169,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     st.write(f'Criteria on both CSV match')
     column_names = df1.columns.tolist()
     num_column = len(column_names)
-    ooptions = df1[column_names[0]].tolist() #turns dataframe to list
+    options = df1[column_names[0]].tolist() #turns dataframe to list
     num_options = len(options) 
     #st.write(f'number of column names {len(column_names)}')
 
@@ -415,7 +415,6 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
             C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
             final[options[i]]=C
             rank.append(C)
-        st.divider()
         
         final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
         df1['score']=rank
