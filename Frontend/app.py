@@ -413,7 +413,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
             for i in range(len(Alt_IdealSol_dist)):
                 C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
                 final[options[i]]=C
-                rank.append(C
+                rank.append(C)
             st.divider()
             
             final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
