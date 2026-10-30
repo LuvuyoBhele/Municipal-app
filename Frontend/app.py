@@ -486,7 +486,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                                         step=1     # Increments/decrements by whole numbers
                                         )       
                 st.subheader('Rankings')
-                st.dataframe(score_board.head[number_rows])
+                st.dataframe(score_board.head(number_rows))
             else:
                 st.write('you talking nonsense')
     
