@@ -331,68 +331,12 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                         ideal_sol.append(r_pos)
                         non_ideal_sol.append(r_neg)
             criteria = column_names[1:]
-            location_names = list(dict.fromkeys(str(option) for option in options))
-            location_cmap = plt.get_cmap('tab20', max(len(location_names), 1))
-            location_colors = {
-                location: location_cmap(index)
-                for index, location in enumerate(location_names)
-            }
-            selected_criterion = st.selectbox('Select a criterion', criteria)
-            criterion_index = criteria.index(selected_criterion)
-            fig, ax = plt.subplots(figsize=(12, 6))
-            ax.bar(
-                options,
-                matrix[:, criterion_index],
-                color=[location_colors[str(option)] for option in options],
-                edgecolor='grey',
-            )
-            ax.axhline(
-                ideal_sol[criterion_index],
-                color='green',
-                linestyle='-',
-                linewidth=2,
-                label='Ideal solution',
-            )
-            ax.axhline(
-                non_ideal_sol[criterion_index],
-                color='red',
-                linestyle='-',
-                linewidth=2,
-                label='Non-ideal solution',
-            )
-            ax.set_title(f'{selected_criterion} by location')
-            ax.set_xlabel('Location', fontweight='bold', fontsize=15)
-            ax.set_ylabel('Weighted normalized value', fontweight='bold', fontsize=15)
-            ax.tick_params(axis='x', rotation=45)
-            ax.legend()
-            fig.tight_layout()
-            st.pyplot(fig)
-            plt.close(fig)
-            fig, ax = plt.subplots(figsize=(12, 6))
-            ax.plot(criteria, ideal_sol, color='green', marker='s', linestyle='-', label='Ideal')
-            ax.plot(criteria, non_ideal_sol, color='red', marker='s', linestyle='-', label='Non-ideal')
-            for option_index, vec in enumerate(matrix):
-                option = options[option_index]
-                ax.plot(
-                    criteria,
-                    vec,
-                    color=location_colors[str(option)],
-                    marker='o',
-                    linestyle='-.',
-                    linewidth=2,
-                    label=option,
-                )
-            ax.set_title('Ideal and Non-Ideal Comparison')
-            ax.set_xlabel('Criteria', fontsize=12)
-            ax.set_ylabel('Weighted normalized value', fontsize=12)
-            ax.tick_params(axis='x', rotation=45)
-            ax.legend()
-            fig.tight_layout()
-            st.pyplot(fig)
-            plt.close(fig)
+
+
+            #the is computation of the final score
             Alt_IdealSol_dist = [] #S+ distance of solutions of each option
             Alt_nonIdealSol_dist = [] #S- distance of solutions of each option
-            #
+                        #
             for vec in matrix:
                 Sep_vec_ideal = np.array(vec) - np.array(ideal_sol)
                 S_pos = np.linalg.norm(Sep_vec_ideal)
@@ -408,14 +352,12 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
             #print(f"The ratings of the non-ideal soltion: {Alt_IdealSol_dist}") #this gives the normalised values of the non ideal solution
             #
             #
-            final = {}
+
             rank = []
             for i in range(len(Alt_IdealSol_dist)):
                 C = Alt_nonIdealSol_dist[i]/(Alt_nonIdealSol_dist[i]+Alt_IdealSol_dist[i])
-                final[options[i]]=C
                 rank.append(C)
             
-            final = dict(sorted(final.items(), key=lambda item: item[1], reverse=True))
             df1['score']=rank
             score_board = df1.sort_values(by='score', ascending=False)
             st.write(f"Enter a number between 0 and {len(score_board)} (0 = display all data).")
@@ -441,11 +383,84 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                                     max_value=num_options,
                                     value=3,  # Strict integer default type
                                     step=1     # Increments/decrements by whole numbers
-                                    )       
+                                    )
+
+            location_index = [options.index(loc) for loc in score_board.head(number_rows)['location']]     
+            
+            winner_options = [options[index] for index in location_index]
+        
+
+            #This is where the graphs start
+            location_names = list(dict.fromkeys(str(option) for option in winner_options))
+            location_cmap = plt.get_cmap('tab20', max(len(location_names), 1))
+            location_colors = {
+                location: location_cmap(location_index)
+                for location_index, location in enumerate(location_names)
+            }
+            selected_criterion = st.selectbox('Select a criterion', criteria)
+            criterion_index = criteria.index(selected_criterion)
+            fig, ax = plt.subplots(figsize=(12, 6))
+            ax.bar(
+                winner_options,
+                matrix[location_index, criterion_index], #picks a column identifying the criterion_index
+                color=[location_colors[option] for option in winner_options],
+                edgecolor='grey',
+            )
+            ax.axhline(
+                ideal_sol[criterion_index],
+                color='green',
+                linestyle='-',
+                linewidth=2,
+                label='Ideal solution',
+            )
+            ax.axhline(
+                non_ideal_sol[criterion_index],
+                color='red',
+                linestyle='-',
+                linewidth=2,
+                label='Non-ideal solution',
+            )
+            ax.set_title(f'{selected_criterion} by location')
+            ax.set_xlabel('Location', fontweight='bold', fontsize=15)
+            ax.set_ylabel('Weighted normalized value', fontweight='bold', fontsize=15)
+            ax.tick_params(axis='x', rotation=45)
+            ax.legend()
+            fig.tight_layout()
+            st.pyplot(fig)
+            plt.close(fig)
+
+
+            fig, ax = plt.subplots(figsize=(12, 6))
+            ax.plot(criteria, ideal_sol, color='green', marker='s', linestyle='-', label='Ideal')
+            ax.plot(criteria, non_ideal_sol, color='red', marker='s', linestyle='-', label='Non-ideal')
+            for index in location_index: ##the problem is here cause we looping through the entire matrix
+                vec = matrix[index, :]
+                option = options[index]
+                ax.plot(
+                    criteria,
+                    vec,
+                    color=location_colors[option],
+                    marker='o',
+                    linestyle='-.',
+                    linewidth=2,
+                    label=option,
+                )
+            ax.set_title('Ideal and Non-Ideal Comparison')
+            ax.set_xlabel('Criteria', fontsize=12)
+            ax.set_ylabel('Weighted normalized value', fontsize=12)
+            ax.tick_params(axis='x', rotation=45)
+            ax.legend()
+            fig.tight_layout()
+            st.pyplot(fig)
+            plt.close(fig)
+
+
             st.subheader('Rankings')
             st.dataframe(score_board.head(number_rows))
-        else:
-            st.write('you talking nonsense')
+
+            
+    else:
+        st.write('you talking nonsense')
         
-    
+
     
