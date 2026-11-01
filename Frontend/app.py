@@ -53,7 +53,6 @@ def consistency_corrector(matrix, ev, labels=None):
 
     # Normalize left eigenvector
     left_ev = left_ev / np.sum(left_ev)
-
     n = matrix.shape[0]
     deviations = []
 
@@ -81,25 +80,46 @@ def consistency_corrector(matrix, ev, labels=None):
         f"(deviation = {deviation:.6f})"
     )
 
-    while consistency_ratio(matrix) >= 0.1:
-        try:
-            new_value = float(
-                st.text_input(f"Enter new comparison {left}/{right}: ")
-            )
+    preference_key = (
+        f"consistency_preference_{tuple(labels) if labels else matrix.shape}_{i}_{j}"
+    )
+    preference = st.session_state.get(preference_key)
+    left_column, right_column = st.columns(2)
+    left_column.button(
+        left,
+        key=f"{preference_key}_left",
+        type="primary" if preference == left else "secondary",
+        on_click=set_preference,
+        args=(preference_key, left),
+    )
+    right_column.button(
+        right,
+        key=f"{preference_key}_right",
+        type="primary" if preference == right else "secondary",
+        on_click=set_preference,
+        args=(preference_key, right),
+    )
 
-            if new_value <= 0:
-                st.number_input("Comparison values must be positive.")
-                continue
+    if preference is None:
+        st.stop()
 
-        except ValueError:
-            st.number_input("Please enter a valid number.")
-            continue
+    not_preference = right if preference == left else left
+    scale = st.slider(
+        f"How much more important is {preference} than {not_preference}?",
+        min_value=1,
+        max_value=9,
+        value=1,
+        step=1,
+        key=f"{preference_key}_scale",
+    )
+    new_value = float(scale) if preference == left else 1 / float(scale)
+    matrix[i, j] = new_value
+    matrix[j, i] = 1 / new_value
 
-        matrix[i, j] = new_value
-        matrix[j, i] = 1 / new_value
-        st.write(f'new consistency ratio is :{consistency_ratio(matrix)}')
-
-    st.write("Consistency ratio is now acceptable.")
+    updated_ratio = consistency_ratio(matrix)
+    st.write(f"New consistency ratio: {updated_ratio:.4f}")
+    if updated_ratio < 0.1:
+        st.write("Consistency ratio is now acceptable.")
 
     return matrix
 
@@ -274,6 +294,8 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                         matrix_element = 1 / comparison
                     judgement_matrix[i, j] = matrix_element
                     judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
+        pv = priority_vector(judgement_matrix)
+        consistency_corrector(judgement_matrix, pv, labels=criteria[1:])
         pv = priority_vector(judgement_matrix)
         cr = consistency_ratio(judgement_matrix)#must this always be positive?
         st.subheader('Analysis')
