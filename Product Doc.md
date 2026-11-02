@@ -1,7 +1,7 @@
 # Product Requirements Document
 
 ## 1. Product summary
-This product is meant to help people decide who to vote for and track the municiple activities happening in your region. It must help people to travel with a taxi so its more efficient.
+This product is meant to help people decide who to vote for and track the municiple activities happening in your region like tracking who gets tenders and the spenditure. It must help with voter education. Get individuals to also input ways on how to improve civic tech so it helps people impove their lives.
 
 ## 2. Problem statement
 
