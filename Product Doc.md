@@ -12,13 +12,13 @@
 
 ### Primary user
 
-### Investor profile to capture
+### Developer profile to capture
 
 ## 6. Main user journey
 
 ## 7. Scope and requirements
 
-### 7.1 Investor profile
+### 7.1 developer profile
 
 ### 7.2 Alternatives and company fit
 
