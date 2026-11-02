@@ -385,7 +385,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                                     step=1     # Increments/decrements by whole numbers
                                     )
 
-            location_index = [options.index(loc) for loc in score_board.head(number_rows)['location']]     
+            location_index = [options.index(loc) for loc in score_board.head(number_rows)[column_names[0]]]     
             
             winner_options = [options[index] for index in location_index]
         
