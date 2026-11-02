@@ -1,6 +1,7 @@
 # Product Requirements Document
 
 ## 1. Product summary
+This product is meant to help people decide who to vote for and track the municiple activities happening in your region. It must help people to travel with a taxi so its more efficient.
 
 ## 2. Problem statement
 
