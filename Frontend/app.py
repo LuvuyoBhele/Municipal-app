@@ -186,12 +186,16 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
         uploaded_file2 = st.file_uploader("upload optimize CSV file", type=["csv"])
 
         
-    st.write(f'Criteria on both CSV match')
+    #st.write(f'Criteria on both CSV match')
     column_names = df1.columns.tolist()
     num_column = len(column_names)
     options = df1[column_names[0]].tolist() #turns dataframe to list
     num_options = len(options) 
     #st.write(f'number of column names {len(column_names)}')
+
+    #turn the numbers into floats
+    for col in column_names[1:]:
+        df1[col] = pd.to_numeric(df1[col], errors='coerce')  # Convert to numeric, setting errors to NaN
 
     invalid_entries = df1[df1.isna().any(axis=1)] #problem is here
     #check if both colummns are the same.
@@ -295,7 +299,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                     judgement_matrix[i, j] = matrix_element
                     judgement_matrix[j, i] = 1 / judgement_matrix[i, j]
         pv = priority_vector(judgement_matrix)
-        consistency_corrector(judgement_matrix, pv, labels=criteria[1:])
+        #consistency_corrector(judgement_matrix, pv, labels=criteria[1:])
         pv = priority_vector(judgement_matrix)
         cr = consistency_ratio(judgement_matrix)#must this always be positive?
         st.subheader('Analysis')
@@ -407,7 +411,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                                     step=1     # Increments/decrements by whole numbers
                                     )
 
-            location_index = [options.index(loc) for loc in score_board.head(number_rows)['location']]     
+            location_index = [options.index(loc) for loc in score_board.head(number_rows)[column_names[0]].tolist()]     
             
             winner_options = [options[index] for index in location_index]
         
@@ -482,7 +486,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
 
             
     else:
-        st.write('you talking nonsense')
+        st.write('Logic is inconsistent please review comparisons')
         
 
     
