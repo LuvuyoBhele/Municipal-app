@@ -165,7 +165,7 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
         # Stop execution here so the rest of the app doesn't run with mismatched data
         st.stop()
         
-    st.write(f'Criteria on both CSV match')
+    #st.write(f'Criteria on both CSV match')
     column_names = df1.columns.tolist()
     num_column = len(column_names)
     options = df1[column_names[0]].tolist() #turns dataframe to list
@@ -419,8 +419,8 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
                 linewidth=2,
                 label='Non-ideal solution',
             )
-            ax.set_title(f'{selected_criterion} by location')
-            ax.set_xlabel('Location', fontweight='bold', fontsize=15)
+            ax.set_title(f'{selected_criterion} by {column_names[0]}', fontweight='bold', fontsize=15)
+            ax.set_xlabel(f'{column_names[0]}', fontweight='bold', fontsize=15)
             ax.set_ylabel('Weighted normalized value', fontweight='bold', fontsize=15)
             ax.tick_params(axis='x', rotation=45)
             ax.legend()
