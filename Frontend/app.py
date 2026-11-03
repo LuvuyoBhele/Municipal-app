@@ -203,8 +203,8 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
             df1 = df1.drop_duplicates()
             st.write('data has been cleaned')
             
-    else:
-            st.write('Reupload the files with complete entries')
+        else:
+                st.write('Reupload the files with complete entries')
     
     invalid_entries = df1[df1.isna().any(axis=1)]
     if len(invalid_entries) == 0:
