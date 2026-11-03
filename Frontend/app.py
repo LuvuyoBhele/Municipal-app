@@ -160,11 +160,10 @@ if uploaded_file1 is not None and uploaded_file2 is not None:
     ######
 
     #4 Check if the columns of criteria match
-    while not df1.columns[1:].equals(df2.columns):
-        st.write('Columns in CSV files do not match please reupload')
-        uploaded_file1 = st.file_uploader("upload matrix CSV file", type=["csv"])
-        uploaded_file2 = st.file_uploader("upload optimize CSV file", type=["csv"])
-
+    if not df1.columns[1:].equals(df2.columns):
+        st.error("Columns in CSV files do not match! Please re-upload matching files.")
+        # Stop execution here so the rest of the app doesn't run with mismatched data
+        st.stop()
         
     st.write(f'Criteria on both CSV match')
     column_names = df1.columns.tolist()
